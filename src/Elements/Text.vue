@@ -1,0 +1,122 @@
+<template>
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type" :textIsEditing="isEditing">
+    <div class="content-inner" @dblclick="showEditor" v-html="value.content"></div>
+  </element-border>
+</template>
+
+
+<script>
+import ElementBorder from './../ElementBorder'
+import MixinElement from './../Mixins/Element'
+import JQuery from 'jquery'
+import Bootstrap from 'bootstrap'
+import SummerNote from 'summernote'
+import 'summernote/dist/lang/summernote-zh-CN'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'summernote/dist/summernote.css'
+
+export default {
+    mixins: [ MixinElement ],
+    data() {
+        return {
+            isEditing: false,
+            tempContent: ''
+        }
+    },
+    components: {
+        ElementBorder
+    },
+    props: {
+        value: {
+            
+        }
+    },
+    watch: {
+        selected(newValue, oldValue) {
+            if (newValue == false && this.isEditing == true) {
+                // 销毁summernote
+                $(this.$el).find('.content-inner').summernote('destroy');
+                if (this.tempContent != '') {
+                    this.value.content = this.tempContent;
+                    this.tempContent = '';
+                }
+                this.isEditing = false;
+            }
+        }
+    },
+    methods: {
+        showEditor(e) {
+            e.preventDefault();
+            let that = this;
+            $(this.$el).find('.content-inner').summernote({
+                airMode: true,
+                dialogsInBody: true,
+                lang: "zh-CN",
+                disableDragAndDrop: true,
+                focus: true,
+                popover: {
+                    disableDragAndDrop: true,
+                    air: [
+                        ['font', ['fontname', 'fontsize', 'color']],
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['para', ['paragraph', 'height']],
+                    ]
+                },
+                callbacks: {
+                    onInit: function() {
+                        let div = $(this).parent().find('.note-editable')[0];
+                        let range = document.createRange();
+                        let len = div.innerText.length;
+                        range.setStart(div, 0);
+                        range.setEnd(div, 1);
+                        getSelection().empty();
+                        getSelection().addRange(range);
+
+                        div.addEventListener('dragstart', function(e) {
+                            e.preventDefault();
+                        });
+
+                        $(this).data('summernote').options.modules.airPopover.prototype.hide = function() {};
+                        $(this).data('summernote').modules.airPopover.update();
+
+                        that.isEditing = true;
+                    },
+                    onChange: function(text) {
+                        let textHeight = $(this).parent().find('.note-editor').height();
+                        let elHeight = $(this).parent().height();
+
+                        that.tempContent = text;
+
+                        if (textHeight >= elHeight) {
+                            $(this).parents('.element-box').css({
+                                height: `${textHeight}px`
+                            });
+                        }
+                    },
+                    onPaste: function(e) {
+                        e.preventDefault();
+                        let insertText = e.originalEvent.clipboardData.getData('text');
+                        document.execCommand('insertText', 0, insertText);
+                    }
+                }
+            });
+        }
+    }
+}
+</script>
+
+
+<style lang="scss">
+    .element-content, .note-editor, .note-editing-area, .note-editable {
+        height: 100%;
+        word-wrap: break-word;
+    }
+    .element-content {
+        output {
+            padding: 0!important;
+        }
+        .note-editing-area .note-editable {
+            user-select: text;
+        }
+    }
+</style>
