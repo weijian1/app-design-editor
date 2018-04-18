@@ -4,8 +4,12 @@
        v-tap="elementClick"
        @mouseenter="elementEnter"
        @mouseleave="elementLeave"
-       :style="value | Obj2CSS">
-    <div class="element-content" v-panstart="startMove" v-panmove="moving" v-panend="endMove" :style="value | Obj2CSSOpacity">
+       :style="value | Obj2CSS('exclude', specialCssProperty)">
+    <div class="element-content" 
+         v-panstart="startMove"
+         v-panmove="moving"
+         v-panend="endMove"
+         :style="value | Obj2CSS('include', specialCssProperty)">
         <slot></slot>
     </div>
     <template v-if="mouseEnter || selected">
@@ -53,6 +57,7 @@ export default {
   data() {
       return {
           mouseEnter: false,
+          specialCssProperty: ['opacity', 'paddingLeft', 'paddingTop', 'paddingRight', 'paddingBottom', 'color'],
           eventData: {
             tempOpacity: 1,
             currentDirection: '',
