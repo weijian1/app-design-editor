@@ -38,7 +38,9 @@ export default {
                     height: 44
                 },
                 width: 375,
-                height: 647
+                height: 647,
+                paddingSize: 12,
+                borderSize: 1
             },
             eventData: {
                 currentPageHeight: 0,
@@ -108,14 +110,13 @@ export default {
     directives: HammerJS,
     computed: {
         wrapperStyle: function() {
-            let width = this.defaultEditorStyle.width;
-            let height = this.defaultEditorStyle.height;
-            let pageWrapperHeight = this.value.pages[this.currentPageIndex].property.height + this.defaultEditorStyle.navbar.height;
-            if (pageWrapperHeight >= this.defaultEditorStyle.height) {
-                height = pageWrapperHeight;
-            }
+            let defaultEditorStyle = this.defaultEditorStyle;
+            let width = defaultEditorStyle.width + defaultEditorStyle.paddingSize * 2 + defaultEditorStyle.borderSize * 2;
             
-            return { width };
+            let paddingTop = defaultEditorStyle.paddingSize,
+                paddingLeft = defaultEditorStyle.paddingSize,
+                paddingRight = defaultEditorStyle.paddingSize;
+            return { width, paddingLeft, paddingRight, paddingTop };
         },
         currentAction() {
             let editor = this.$parent;
@@ -131,11 +132,11 @@ export default {
 <style lang="scss" scoped>
     .editor-wrapper {
         position: absolute;
-        width: 375px;
+        width: 401px;
         height: auto;
         left: 0;
         right: 0;
-        top: 17vh;
+        top: 8vh;
         margin: auto;
         border: 1px dashed #c7c6c6;
         margin-bottom: 100px;
