@@ -30,7 +30,9 @@ export default function(value, action, actionProperty = []) {
         }
     }
 
-    console.log(resultCss);
+    if (typeof resultCss.opacity != 'undefined') {
+        resultCss.opacity = 1 - resultCss.opacity;
+    }
 
     return resultCss;
 }
