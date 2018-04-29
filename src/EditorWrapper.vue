@@ -1,8 +1,8 @@
 <template>
   <div class="editor-wrapper" :class="currentAction" :style="wrapperStyle | Obj2CSS">
       <div class="editor-content">
-        <editor-header v-model="value.header" :navbar="defaultEditorStyle.navbar"></editor-header>
-        <editor-body v-model="value.pages[this.currentPageIndex]" :editorStyle="defaultEditorStyle" :currentPageIndex="currentPageIndex"></editor-body>
+        <editor-header v-model="header" :navbar="defaultEditorStyle.navbar"></editor-header>
+        <editor-body v-model="value" :editorStyle="defaultEditorStyle"></editor-body>
         <div class="editor-drag" v-panstart="pageHeightDragStart" v-panmove="pageHeightDrag" v-panend="pageHeightDragEnd" :class="{'draging': eventData.isPageDragable == true}">
             <div class="editor-drag-tip"><i class="icon icon-down"></i><span>拖动调节页面高度</span><i class="icon icon-up"></i></div>
         </div>
@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import EditorHeader from './EditorHeader'
-import EditorBody from './EditorBody'
+import EditorHeader from './EditorHeader.vue'
+import EditorBody from './EditorBody.vue'
 import HammerJS from './Directives/Hammer'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
@@ -27,7 +27,10 @@ export default {
         value: {
             required: true
         },
-        currentPageIndex: {
+        header: {
+            required: true
+        },
+        footer: {
             required: true
         }
     },
@@ -58,7 +61,7 @@ export default {
         pageHeightDragStart(e) {
             this.editorParent.unselectElemnt();
 
-            this.eventData.currentPageHeight = this.value.pages[this.currentPageIndex].property.height;
+            this.eventData.currentPageHeight = this.value.property.height;
 
             let rectWrapper = this.$el.getBoundingClientRect();
             let rectDrag = this.$el.querySelector(".editor-drag").getBoundingClientRect();
@@ -95,11 +98,11 @@ export default {
             let pageNewHeight = this.eventData.currentPageHeight + e.deltaY;
 
             if (-e.deltaY > this.eventData.maxOffset.height) {
-                this.value.pages[this.currentPageIndex].property.height = this.eventData.minPos.height;
+                this.value.property.height = this.eventData.minPos.height;
             } else if (pageMinHeight <= pageNewHeight) {
-                this.value.pages[this.currentPageIndex].property.height = pageNewHeight;
+                this.value.property.height = pageNewHeight;
             } else {
-                this.value.pages[this.currentPageIndex].property.height = pageMinHeight;
+                this.value.property.height = pageMinHeight;
             }
         },
         pageHeightDragEnd() {

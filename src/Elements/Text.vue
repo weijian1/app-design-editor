@@ -6,7 +6,7 @@
 
 
 <script>
-import ElementBorder from './../ElementBorder'
+import ElementBorder from './../ElementBorder.vue'
 import MixinElement from './../Mixins/Element'
 import JQuery from 'jquery'
 import Bootstrap from 'bootstrap'

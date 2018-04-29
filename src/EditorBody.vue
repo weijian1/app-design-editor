@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ElementText from './Elements/Text'
+import ElementText from './Elements/Text.vue'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
 
@@ -27,9 +27,6 @@ export default {
         },
         editorStyle: {
             required: true
-        },
-        currentPageIndex: {
-            required: true
         }
     },
     methods: {
@@ -44,7 +41,6 @@ export default {
             }
             this.selectElementIndex = index;
             this.editor.$emit('elementchange', {
-                pageIndex: this.currentPageIndex,
                 elementIndex: index
             });
         }

@@ -1,6 +1,6 @@
 <template>
     <div class="design-editor">
-        <editor-wrapper v-model="value" :currentPageIndex="currentPageIndex"></editor-wrapper>
+        <editor-wrapper v-model="value" :header="appHeader" :footer="appFooter"></editor-wrapper>
     </div>
 </template>
 
@@ -19,15 +19,17 @@ export default {
         value: {
             required: true
         },
-        currentPageIndex: {
-
+        appHeader: {
+            required: true
+        },
+        appFooter: {
+            required: true
         }
     },
     data() {
         return {
             editorData: {
                 select: {
-                    pageIndex: this.currentPageIndex,
                     elementIndex: null
                 },
                 currentAction: {
@@ -36,11 +38,6 @@ export default {
                     move: false
                 }
             }
-        }
-    },
-    watch: {
-        currentPageIndex(newValue, oldValue) {
-            this.unselectElemnt();
         }
     },
     methods: {
@@ -57,7 +54,6 @@ export default {
             }
         },
         elementChange(elementIndex) {
-            this.editorData.select.pageIndex = this.currentPageIndex;
             this.editorData.select.elementIndex = elementIndex;
         },
 
@@ -77,10 +73,10 @@ export default {
                 this.bodyChildren.$refs[`component_${this.editorData.select.elementIndex}`][0].unselect();
             }
 
-            this.value.pages[this.currentPageIndex].elements.push(options);
+            this.value.elements.push(options);
 
             setTimeout(() => {
-                let lastElementIndex = this.value.pages[this.currentPageIndex].elements.length - 1;
+                let lastElementIndex = this.value.elements.length - 1;
                 this.bodyChildren.$refs[`component_${lastElementIndex}`][0].select();
 
                 this.elementChange(lastElementIndex);
