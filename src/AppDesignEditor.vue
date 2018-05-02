@@ -6,7 +6,7 @@
 
 
 <script>
-import EditorWrapper from './EditorWrapper'
+import EditorWrapper from './EditorWrapper.vue'
 import EditorMinxin  from './Mixins/Editor'
 
 export default {

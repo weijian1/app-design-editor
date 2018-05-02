@@ -146,6 +146,7 @@ export default {
         padding: 12px;
         padding-bottom: 0;
         background: white;
+        box-sizing: border-box;
 
         .editor-drag {
             cursor: n-resize;

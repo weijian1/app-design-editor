@@ -1,7 +1,7 @@
 <template>
   <div class="editor-body" :style="propertyCss | Obj2CSS" @click="unselectElemnt">
       <template v-for="(element, index) in value.elements">
-        <component :is="`element-${element.element_type}`" v-model="value.elements[index]" :ref="`component_${index}`" :index="index" @elementchange="onElementChange"></component>
+        <component :is="`element-${element.elementable_type}`" v-model="value.elements[index]" :ref="`component_${index}`" :index="index" @elementchange="onElementChange"></component>
       </template>
   </div>
 </template>
