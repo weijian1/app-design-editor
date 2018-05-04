@@ -8,13 +8,17 @@
 
 <script>
 import ElementText from './Elements/Text.vue'
+import ElementImg from './Elements/Img.vue'
+import ElementSvg from './Elements/Svg.vue'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
 
 export default {
     mixins: [ EditorMinxin ],
     components: {
-        ElementText
+        ElementText,
+        ElementImg,
+        ElementSvg
     },
     data() {
         return {

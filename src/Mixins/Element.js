@@ -45,6 +45,10 @@ export default {
 
             this.selected = selected;
         });
+
+        this.$children[0].$on('elementdbclick', () => {
+            this.editorParent.onElementDblClick(this.elementIndex);
+        });
     },
     methods: {
         unselect() {

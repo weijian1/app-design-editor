@@ -66,6 +66,9 @@ export default {
             this.elementChange(elementIndex);
             this.$emit('elementchange', this.editorData.select);
         },
+        onElementDblClick(elementIndex) {
+            this.$emit('elementdblclick', this.editorData.select);
+        },
 
         // api
         createElement(options) {
