@@ -4,6 +4,7 @@
        v-tap="elementClick"
        @mouseenter="elementEnter"
        @mouseleave="elementLeave"
+       @dblclick="elementDblClick"
        :style="value | Obj2CSS('exclude', specialCssProperty)">
     <div class="element-content" 
          v-panstart="startMove"
@@ -83,6 +84,9 @@ export default {
       }
   },
   methods: {
+      elementDblClick() {
+          this.$emit('elementdbclick');
+      },
       notifySelect() {
           if (this.selected == false) {
               this.$emit('elementchange', true);
