@@ -24,6 +24,22 @@ export default {
         },
         appFooter: {
             required: true
+        },
+        amapConfig: {
+            
+        }
+    },
+    mounted() {
+        if (this.amapConfig.apiKey != '') {
+            let scriptEl = document.createElement("script");
+            scriptEl.src = `http://webapi.amap.com/maps?v=1.4.6&key=${this.amapConfig.apiKey}`;
+
+            scriptEl.addEventListener('load', () => {
+                this.loading = false;
+                this.$emit('editorready');
+            }, false);
+
+            document.getElementsByTagName("head")[0].appendChild(scriptEl);
         }
     },
     data() {
@@ -37,7 +53,8 @@ export default {
                     rotate: false,
                     move: false
                 }
-            }
+            },
+            loading: true
         }
     },
     methods: {

@@ -10,6 +10,8 @@
 import ElementText from './Elements/Text.vue'
 import ElementImg from './Elements/Img.vue'
 import ElementSvg from './Elements/Svg.vue'
+import ElementVideo from './Elements/Video.vue'
+import ElementMap from './Elements/Map.vue'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
 
@@ -18,7 +20,9 @@ export default {
     components: {
         ElementText,
         ElementImg,
-        ElementSvg
+        ElementSvg,
+        ElementVideo,
+        ElementMap
     },
     data() {
         return {

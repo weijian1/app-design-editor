@@ -425,7 +425,7 @@ export default {
             top: -30px;
             left: 50%;
             margin-left: -5px;
-            background: green;
+            background: black;
             border: none;
             cursor: move;
         }

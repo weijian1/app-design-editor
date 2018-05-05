@@ -37,7 +37,7 @@ export default {
             return {
                 backgroundImage: `url('${this.value.img.property.src}')`,
                 backgroundRepeat: 'no-repeat',
-                backgroundSize: 'contain',
+                backgroundSize: 'cover',
                 backgroundPosition: 'center'
             };
         }

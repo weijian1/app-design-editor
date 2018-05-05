@@ -32,11 +32,11 @@ export default {
             let svgEl = this.$el.querySelector(".content-inner svg");
             svgEl.style.fill = newVal;
 
-            this.value.svg.property.svg_base64 = 'data:image/svg+xml;base64,' + Base64Util.encode(svgEl.parentElement.innerHTML);
+            this.value.svg.property.svgBase64 = 'data:image/svg+xml;base64,' + Base64Util.encode(svgEl.parentElement.innerHTML);
         }
     },
     mounted() {
-        this.svg_html = Base64Util.decode(this.value.svg.property.svg_base64);
+        this.svg_html = Base64Util.decode(this.value.svg.property.svgBase64);
         this.$watch('value.svg.property.fill', this.updateSvg);
         this.$nextTick(() => {
             this.updateSvg(this.value.svg.property.fill, '');
@@ -45,7 +45,7 @@ export default {
     computed: {
         imgCss() {
             return {
-                backgroundImage: `url('${this.value.svg.property.svg_base64}')`,
+                backgroundImage: `url('${this.value.svg.property.svgBase64}')`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center'
