@@ -12,7 +12,8 @@ import ElementImg from './Elements/Img.vue'
 import ElementSvg from './Elements/Svg.vue'
 import ElementVideo from './Elements/Video.vue'
 import ElementMap from './Elements/Map.vue'
-import ElementSlider from './Elements/Slider'
+import ElementSlider from './Elements/Slider.vue'
+import ElementClassify from './Elements/Classify.vue'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
 
@@ -24,7 +25,8 @@ export default {
         ElementSvg,
         ElementVideo,
         ElementMap,
-        ElementSlider
+        ElementSlider,
+        ElementClassify
     },
     data() {
         return {
