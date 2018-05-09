@@ -2,7 +2,7 @@
   <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type">
       <template v-if="value.slider.property">
         <div class="content-inner">
-            <img v-if="currentItem != null" :src="currentItem.url" width="100%" height="100%" />
+            <img v-if="currentItem != null" :style="imgCss | Obj2CSS" :src="currentItem.url" width="100%" height="100%" />
         </div>
         <div class="indicator-wrapper" v-if="value.slider.property.hasIndicator == 1">
             <span v-for="(item,index) in value.slider.property.items" 
@@ -55,6 +55,11 @@ export default {
             }
 
             return null;
+        },
+        imgCss: function() {
+            return {
+                borderRadius: this.value.base_css.borderRadius
+            };
         }
     },
     filters: {
