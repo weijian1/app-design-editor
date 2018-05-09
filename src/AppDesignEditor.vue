@@ -30,7 +30,7 @@ export default {
         }
     },
     mounted() {
-        if (this.amapConfig.apiKey != '') {
+        if (this.amapConfig && this.amapConfig.apiKey != '') {
             let scriptEl = document.createElement("script");
             scriptEl.src = `http://webapi.amap.com/maps?v=1.4.6&key=${this.amapConfig.apiKey}`;
 
@@ -85,6 +85,14 @@ export default {
         },
         onElementDblClick(elementIndex) {
             this.$emit('elementdblclick', this.editorData.select);
+        },
+        onEditorHeaderSelect() {
+            this.unselectElemnt();
+            this.$emit('headerselect');
+        },
+        onSaveButtonClick() {
+            this.unselectElemnt();
+            this.$emit('savebuttonclick');
         },
 
         // api

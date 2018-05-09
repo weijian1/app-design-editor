@@ -1,18 +1,19 @@
 <template>
   <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type">
       <div class="content-inner" v-if="value.classify.property" ref="itemList" :style="contentInnerCss | Obj2CSS">
-          <span v-for="(item,index) in value.classify.property.items" 
+          <div class="classify-item" v-for="(item,index) in value.classify.property.items" 
                 :key="index"
-                :style="{
+                :class="`item-count-${countClass}`">
+                <span :style="{
                             color: item.activeColor,
                             textDecoration: value.base_css.textDecoration,
                             borderBottomStyle: 'solid',
                             borderBottomWidth: item.borderColor ? '1px' : 0,
                             borderBottomColor: item.borderColor
-                        }"
-                :class="`item-count-${countClass}`">
+                        }">
                 {{ item.title }}
-            </span>
+                </span>
+            </div>
       </div>
   </element-border>
 </template>
@@ -70,7 +71,6 @@ export default {
             // 判断左边是否超出
             if (elementContentRect.left >= itemRect.left) {
                 let offsetWidth = elementContentRect.left - itemRect.left;
-                console.log(offsetWidth);
                 this.contentInnerCss = {
                     left: offsetWidth + currentLeft
                 };
@@ -120,7 +120,8 @@ export default {
     flex-flow: row nowrap;
     align-items: center;
     float: left;
-    span {
+    background: white;
+    .classify-item {
         display: block;
         flex-grow: 1;
         text-align: center;
@@ -128,6 +129,10 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
         min-width: 75px;
+        padding-bottom: 4px;
+        span {
+            padding-bottom: 4px;
+        }
     }
 
     .item-count-1 {

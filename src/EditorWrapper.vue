@@ -7,6 +7,9 @@
             <div class="editor-drag-tip"><i class="icon icon-down"></i><span>拖动调节页面高度</span><i class="icon icon-up"></i></div>
         </div>
       </div>
+    <button class="save-btn" @click="clickSave">
+        <i class="icon-save"></i>
+    </button>
   </div>
 </template>
 
@@ -108,6 +111,9 @@ export default {
         pageHeightDragEnd() {
             this.eventData.isPageDragable = false;
             this.editorParent.editorData.currentAction.move = false;
+        },
+        clickSave() {
+            this.editorParent.onSaveButtonClick();
         }
     },
     directives: HammerJS,
@@ -169,6 +175,24 @@ export default {
         }
         &.resize, &.move, &.rotate {
             pointer-events: none;
+        }
+
+        button.save-btn {
+            position: absolute;
+            right: -54px;
+            bottom: 40px;
+            width: 36px;
+            height: 36px;
+            background: #4d4d4d;
+            border-radius: 36px;
+            border: none;
+            i {
+                display: block;
+                width: 16px;
+                height: 16px;
+                position: relative;
+                margin: 0 auto;
+            }
         }
     }
 </style>
