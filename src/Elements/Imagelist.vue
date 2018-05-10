@@ -3,11 +3,11 @@
     <div class="content-inner" v-if="value.imagelist.property" ref="itemList" :style="contentInnerCss | Obj2CSS">
         <div class="imagelist-item" v-for="(item,index) in value.imagelist.property.items" 
             :key="index" :style="{
-                width: value.imagelist.property.imageSetting.width
+                width: value.imagelist.property.imageBaseSetting.width
             } | Obj2CSS">
             <div class="image" :style="{
-                width: value.imagelist.property.imageSetting.width,
-                height: value.imagelist.property.imageSetting.height,
+                width: value.imagelist.property.imageBaseSetting.width,
+                height: value.imagelist.property.imageBaseSetting.height,
                 backgroundImage: item.url,
             } | Obj2CSS"></div>
             <div class="text-wrapper" :style="{
@@ -103,7 +103,7 @@ export default {
         },
         calcCurrentHeight() {
             let property = this.value.imagelist.property;
-            let totalHeight = property.imageSetting.height;
+            let totalHeight = property.imageBaseSetting.height;
             totalHeight += property.isShowTitle ? property.titleBaseSetting.height : 0;
             totalHeight += property.isShowSubTitle ? property.subTitleBaseSetting.height : 0;
             totalHeight += property.isShowIntroduce ? property.introduceBaseSetting.height : 0;
@@ -129,7 +129,7 @@ export default {
         this.calcCurrentHeight();
 
         // 当高度改变和设置开关的时候重新计算高度
-        this.$watch('value.imagelist.property.imageSetting.height', invokeWatch);
+        this.$watch('value.imagelist.property.imageBaseSetting.height', invokeWatch);
         this.$watch('value.imagelist.property.titleBaseSetting.height', invokeWatch);
         this.$watch('value.imagelist.property.subTitleBaseSetting.height', invokeWatch);
         this.$watch('value.imagelist.property.introduceBaseSetting.height', invokeWatch);

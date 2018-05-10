@@ -120,7 +120,6 @@ export default {
     flex-flow: row nowrap;
     align-items: center;
     float: left;
-    background: white;
     .classify-item {
         display: block;
         flex-grow: 1;
