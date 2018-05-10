@@ -1,7 +1,7 @@
 <template>
   <div class="editor-body" :style="propertyCss | Obj2CSS" @click="unselectElemnt">
       <template v-for="(element, index) in value.elements">
-        <component :is="`element-${element.elementable_type}`" v-model="value.elements[index]" :ref="`component_${index}`" :index="index" @elementchange="onElementChange"></component>
+        <component :is="`element-${element.elementable_type}`" v-model="value.elements[index]" :ref="`component_${index}`" :index="index" @elementchange="onElementChange" :key="index"></component>
       </template>
   </div>
 </template>
@@ -14,6 +14,7 @@ import ElementVideo from './Elements/Video.vue'
 import ElementMap from './Elements/Map.vue'
 import ElementSlider from './Elements/Slider.vue'
 import ElementClassify from './Elements/Classify.vue'
+import ElementImagelist from './Elements/Imagelist.vue'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
 
@@ -26,7 +27,8 @@ export default {
         ElementVideo,
         ElementMap,
         ElementSlider,
-        ElementClassify
+        ElementClassify,
+        ElementImagelist
     },
     data() {
         return {

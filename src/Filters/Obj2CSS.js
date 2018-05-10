@@ -17,7 +17,13 @@ export default function(value, action, actionProperty = []) {
             continue;
         }
 
-        if (arrPxUnits.filter(item => item == key).length == 1) {
+        if (key == 'lineHeight') {
+            if (value <= 2) {
+                resultCss[key] = propValue;
+            } else {
+                resultCss[key] = `${propValue}px`;
+            }
+        } else if (arrPxUnits.filter(item => item == key).length == 1) {
             resultCss[key] = `${propValue}px`;
         } else if (arrRotateProp.filter(item => item == key).length == 1 && propValue != 0) {
             resultCss.transform += ` ${key}(${propValue}deg)`;

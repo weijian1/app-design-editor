@@ -56,12 +56,12 @@ export default {
             let itemRect = item.getBoundingClientRect();
             let elementContentRect = elementContent.getBoundingClientRect();
             let elementContentLeftWidth = elementContentRect.left + elementContentRect.width;
+            let itemLeftWidth = itemRect.left + itemRect.width;
 
             let currentLeft = this.contentInnerCss.left;
-            // console.log(currentLeft);
 
             // 判断右边是否超出
-            if (elementContentLeftWidth <= itemRect.left) {
+            if (elementContentLeftWidth <= itemLeftWidth) {
                 let offsetWidth = itemRect.left - elementContentLeftWidth + itemRect.width;
                 this.contentInnerCss = {
                     left: -offsetWidth + currentLeft
@@ -129,7 +129,8 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
         min-width: 75px;
-        padding-bottom: 4px;
+        padding-top: 6px;
+        padding-bottom: 6px;
         span {
             padding-bottom: 4px;
         }
