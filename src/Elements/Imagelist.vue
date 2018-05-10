@@ -3,37 +3,37 @@
     <div class="content-inner" v-if="value.imagelist.property" ref="itemList" :style="contentInnerCss | Obj2CSS">
         <div class="imagelist-item" v-for="(item,index) in value.imagelist.property.items" 
             :key="index" :style="{
-                width: value.imagelist.property.imageBaseSetting.width
+                width: value.imagelist.property.image_base_setting.width
             } | Obj2CSS">
             <div class="image" :style="{
-                width: value.imagelist.property.imageBaseSetting.width,
-                height: value.imagelist.property.imageBaseSetting.height,
+                width: value.imagelist.property.image_base_setting.width,
+                height: value.imagelist.property.image_base_setting.height,
                 backgroundImage: item.url,
             } | Obj2CSS"></div>
             <div class="text-wrapper" :style="{
                 lineHeight: value.base_css.lineHeight
             } | Obj2CSS">
                 <div class="title" v-if="value.imagelist.property.isShowTitle == 1" :style="{
-                    fontFamily: item.titleSetting.fontFamily,
-                    fontSize: item.titleSetting.fontSize,
-                    color: item.titleSetting.color,
-                    height: value.imagelist.property.titleBaseSetting.height
+                    fontFamily: item.title_setting.fontFamily,
+                    fontSize: item.title_setting.fontSize,
+                    color: item.title_setting.color,
+                    height: value.imagelist.property.title_base_setting.height
                 } | Obj2CSS">
                 {{ item.title }}
                 </div>
                 <div class="subtitle" v-if="value.imagelist.property.isShowSubTitle == 1" :style="{
-                    fontFamily: item.subTitleSetting.fontFamily,
-                    fontSize: item.subTitleSetting.fontSize,
-                    color: item.subTitleSetting.color,
-                    height: value.imagelist.property.subTitleBaseSetting.height
+                    fontFamily: item.sub_title_setting.fontFamily,
+                    fontSize: item.sub_title_setting.fontSize,
+                    color: item.sub_title_setting.color,
+                    height: value.imagelist.property.sub_title_base_setting.height
                 } | Obj2CSS">
                     {{ item.subTitle }}
                 </div>
                 <div class="introduce" v-if="value.imagelist.property.isShowIntroduce == 1" :style="{
-                    fontFamily: item.introduceSetting.fontFamily,
-                    fontSize: item.introduceSetting.fontSize,
-                    color: item.introduceSetting.color,
-                    height: value.imagelist.property.introduceBaseSetting.height
+                    fontFamily: item.introduce_setting.fontFamily,
+                    fontSize: item.introduce_setting.fontSize,
+                    color: item.introduce_setting.color,
+                    height: value.imagelist.property.introduce_base_setting.height
                 } | Obj2CSS">
                     {{ item.introduce }}
                 </div>
@@ -103,10 +103,10 @@ export default {
         },
         calcCurrentHeight() {
             let property = this.value.imagelist.property;
-            let totalHeight = property.imageBaseSetting.height;
-            totalHeight += property.isShowTitle ? property.titleBaseSetting.height : 0;
-            totalHeight += property.isShowSubTitle ? property.subTitleBaseSetting.height : 0;
-            totalHeight += property.isShowIntroduce ? property.introduceBaseSetting.height : 0;
+            let totalHeight = property.image_base_setting.height;
+            totalHeight += property.isShowTitle ? property.title_base_setting.height : 0;
+            totalHeight += property.isShowSubTitle ? property.sub_title_base_setting.height : 0;
+            totalHeight += property.isShowIntroduce ? property.introduce_base_setting.height : 0;
             
             this.value.base_css.height = totalHeight;
         }
@@ -129,10 +129,10 @@ export default {
         this.calcCurrentHeight();
 
         // 当高度改变和设置开关的时候重新计算高度
-        this.$watch('value.imagelist.property.imageBaseSetting.height', invokeWatch);
-        this.$watch('value.imagelist.property.titleBaseSetting.height', invokeWatch);
-        this.$watch('value.imagelist.property.subTitleBaseSetting.height', invokeWatch);
-        this.$watch('value.imagelist.property.introduceBaseSetting.height', invokeWatch);
+        this.$watch('value.imagelist.property.image_base_setting.height', invokeWatch);
+        this.$watch('value.imagelist.property.title_base_setting.height', invokeWatch);
+        this.$watch('value.imagelist.property.sub_title_base_setting.height', invokeWatch);
+        this.$watch('value.imagelist.property.introduce_base_setting.height', invokeWatch);
 
         this.$watch('value.imagelist.property.isShowTitle', invokeWatch);
         this.$watch('value.imagelist.property.isShowSubTitle', invokeWatch);
