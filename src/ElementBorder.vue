@@ -16,18 +16,18 @@
     <template v-if="mouseEnter || selected">
         <div class="bar bar-radius bar-rotate" v-panstart="startRotate" v-panmove="rotating" v-panend="endRotate"></div>
         <div class="bar bar-line"></div>
-        <div class="bar bar-n" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-s" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-w" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-e" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-radius bar-rn" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-radius bar-rs" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-radius bar-rw" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-radius bar-re" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-radius bar-rnw" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-radius bar-rne" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-radius bar-rsw" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
-        <div class="bar bar-radius bar-rse" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-n directoin-n" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-s directoin-s" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-w directoin-w" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-e directoin-e" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-radius bar-rn direction-n" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-radius bar-rs direction-s" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-radius bar-rw direction-w" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-radius bar-re direction-e" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-radius bar-rnw direction-nw" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-radius bar-rne direction-ne" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-radius bar-rsw direction-sw" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
+        <div class="bar bar-radius bar-rse direction-se" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
     </template>
   </div>
 </template>
@@ -53,12 +53,40 @@ export default {
       },
       textIsEditing: {
 
+      },
+      listeners: {
+          default() {
+            return {
+                resize: true,
+                resizeDirection: [],
+                rotate: true,
+                move: true
+            };
+          }
       }
   },
   data() {
       return {
           mouseEnter: false,
           specialCssProperty: ['opacity', 'paddingLeft', 'paddingTop', 'paddingRight', 'paddingBottom', 'color'],
+          eventCommonDefine: {
+            n: {
+                axis: 'deltaY',
+                direction: 'top'
+            },
+            s: {
+                axis: 'deltaY',
+                direction: 'bottom'
+            },
+            w: {
+                axis: 'deltaX',
+                direction: 'left'
+            },
+            e: {
+                axis: 'deltaX',
+                direction: 'right'
+            }
+        },
           eventData: {
             tempOpacity: 1,
             currentDirection: '',
@@ -68,22 +96,53 @@ export default {
                 width: 0,
                 height: 0
             },
-            originElementRect: {
-
-            },
-            resizeOffset: {
-
-            },
-            moveOffset: {
-
-            },
+            originElementRect: {},
+            eventMaxOffset: {},
+            resizeOffset: {},
+            moveOffset: {},
             resize: false,
             rotate: false,
             move: false,
           }
       }
-  },
+            },
   methods: {
+    // 记录元素起始位置
+    recordStartPos() {
+        let { top, left, width, height } = this.value;
+        this.eventData.originElementPos.top = top;
+        this.eventData.originElementPos.left = left;
+        this.eventData.originElementPos.width = width;
+        this.eventData.originElementPos.height = height;
+
+        this.eventData.originElementRect = this.$el.getBoundingClientRect();
+    },
+      initStartEventData(e) {
+        let { top, left, width, height } = this.value;
+        this.eventData.originElementPos.top = parseFloat(top);
+        this.eventData.originElementPos.left = parseFloat(left);
+        this.eventData.originElementPos.width = parseFloat(width);
+        this.eventData.originElementPos.height = parseFloat(height);
+
+        this.eventData.originElementRect = this.$el.getBoundingClientRect();
+
+        let arrClassList = e.target.classList.value.split(' ');
+
+        for (let i = 0, len = arrClassList.length; i < len; i++) {
+            let directionClass = 'direction-';
+            let directionTextIndex = arrClassList[i].indexOf(directionClass);
+            if (directionTextIndex == 0) {
+                this.eventData.currentDirection = arrClassList[i].substr(directionClass.length);
+                break;
+            }
+        }
+    },
+    formatSize(newTop, newLeft, newWidth ,newHeight) {
+        this.value.top = parseFloat(newTop.toFixed(2));
+        this.value.height = parseFloat(newHeight.toFixed(2));
+        this.value.left = parseFloat(newLeft.toFixed(2));
+        this.value.width = parseFloat(newWidth.toFixed(2));
+    },
       elementDblClick() {
           this.$emit('elementdbclick');
       },
@@ -109,118 +168,83 @@ export default {
       startResize(e) {
           e.srcEvent.stopPropagation();
           e.preventDefault();
-          let arrClassList = e.target.classList.value.split(' ');
 
-          for (let i = 0, len = arrClassList.length; i < len; i++) {
-              if (arrClassList[i] == 'bar' || arrClassList[i] == 'bar-radius') {
-                  continue;
-              } else {
-                  let directionClass = arrClassList[i].replace('bar-', '');
-                  if (directionClass == 'rs' || directionClass == 's') {
-                      this.eventData.currentDirection = 's';
-                  } else if (directionClass == 'rn' || directionClass == 'n') {
-                      this.eventData.currentDirection = 'n';
-                  } else if (directionClass == 'rw' || directionClass == 'w') {
-                      this.eventData.currentDirection = 'w';
-                  } else if (directionClass == 're' || directionClass == 'e') {
-                      this.eventData.currentDirection = 'e';
-                  } else {
-                      this.eventData.currentDirection = directionClass.substr(1);
-                  }
-              }
+          if (this.listeners.resize == true) {
+            this.initStartEventData(e);
+
+            let rectOriginEl = this.$el.getBoundingClientRect();
+            let rectEditorRect = this.bodyParent.$el.getBoundingClientRect();
+
+            let maxOffset = {
+                left: rectOriginEl.left - rectEditorRect.left,
+                top: rectOriginEl.top - rectEditorRect.top,
+                right: rectEditorRect.right - rectOriginEl.right,
+                bottom: rectEditorRect.bottom - rectOriginEl.bottom
+            };
+
+            this.eventData.eventMaxOffset = maxOffset;
+
+            this.eventData.resize = true;
+            this.eventData.select = true;
+            this.notifySelect();
+
+            this.editorData.currentAction.resize = true;
           }
-
-          let rectOriginEl = this.$el.getBoundingClientRect();
-          let rectEditorRect = this.bodyParent.$el.getBoundingClientRect();
-
-          let maxOffset = {
-              left: rectOriginEl.left - rectEditorRect.left,
-              top: rectOriginEl.top - rectEditorRect.top,
-              right: rectEditorRect.right - rectOriginEl.right,
-              bottom: rectEditorRect.bottom - rectOriginEl.bottom
-          };
-
-          this.eventData.resizeOffset = maxOffset;
-
-          this.recordStartPos();
-          this.eventData.resize = true;
-          this.eventData.select = true;
-          this.notifySelect();
-
-          this.editorData.currentAction.resize = true;
       },
       resizing(e) {
           e.srcEvent.stopPropagation();
           e.preventDefault();
           if (this.eventData.resize) {
-            let originElementPos = this.eventData.originElementPos;
-            let offset = {
-                left: 0,
-                top: 0,
-                right: 0,
-                bottom: 0
-            };
-
             let direction = this.eventData.currentDirection;
-            let resizeOffset = this.eventData.resizeOffset;
-            const MIN_SIZE = 2;
-            
-            if (direction == 'n' || direction == 'nw' || direction == 'ne') {
-                if (-e.deltaY >= resizeOffset.top) {
-                    offset.top = resizeOffset.top;
-                } else {
-                    offset.top = -e.deltaY;
-                }
-            }
+            let allowDirection = this.listeners.resizeDirection.filter(item => item == direction);
 
-            if (direction == 's' || direction == 'sw' || direction == 'se') {
-                if (e.deltaY >= resizeOffset.bottom) {
-                    offset.bottom = resizeOffset.bottom;
-                } else {
-                    offset.bottom = e.deltaY;
-                }
-            }
+            if (this.listeners.resizeDirection.length == 0 || allowDirection.length == 1) {
+                let originElementPos = this.eventData.originElementPos;
+                let offset = {
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    bottom: 0
+                };
 
-            if (direction == 'w' || direction == 'nw' || direction == 'sw') {
-                if (-e.deltaX >= resizeOffset.left) {
-                    offset.left = resizeOffset.left;
-                } else {
-                    offset.left = -e.deltaX;
-                }
-            }
+                let maxOffset = this.eventData.eventMaxOffset;
+                const MIN_SIZE = 2;
 
-            if (direction == 'e' || direction == 'ne' || direction == 'se') {
-                if (e.deltaX >= resizeOffset.right) {
-                    offset.right = resizeOffset.right;
-                } else {
-                    offset.right = e.deltaX;
-                }
-            }
+                for (let i = 0; i < direction.length; i++) {
+                    let commonDefine = this.eventCommonDefine[direction[i]];
+                    let delta = e[commonDefine.axis];
+                    delta = direction[i] == 'n' || direction[i] == 'w' ? -delta : delta;
+                    let offsetLength = maxOffset[commonDefine.direction];
 
-            let newTop = originElementPos.top - offset.top;
-            let newHeight = originElementPos.height + offset.top + offset.bottom;
-            let newLeft = originElementPos.left - offset.left;
-            let newWidth = originElementPos.width + offset.left + offset.right;
-
-            if (newHeight < MIN_SIZE) {
-                if (this.eventData.currentDirection == 'n' || this.eventData.currentDirection == 'ne' || this.eventData.currentDirection == 'nw') {
-                    newTop += newHeight;
-                    newTop -= MIN_SIZE;
+                    if (delta >= offsetLength) {
+                        offset[commonDefine.direction] = offsetLength;
+                    } else {
+                        offset[commonDefine.direction] = delta;
+                    }
                 }
-                newHeight = MIN_SIZE;
-            }
-            if (newWidth < MIN_SIZE) {
-                if (this.eventData.currentDirection == 'w' || this.eventData.currentDirection == 'nw' || this.eventData.currentDirection == 'sw') {
-                    newLeft += newWidth; 
-                    newLeft -= MIN_SIZE;
-                }
-                newWidth = MIN_SIZE;
-            }
+                
+                let newTop = originElementPos.top - offset.top;
+                let newHeight = originElementPos.height + offset.top + offset.bottom;
+                let newLeft = originElementPos.left - offset.left;
+                let newWidth = originElementPos.width + offset.left + offset.right;
 
-            this.value.top = newTop;
-            this.value.height = newHeight;
-            this.value.left = newLeft;
-            this.value.width = newWidth;
+                if (newHeight < MIN_SIZE) {
+                    if (direction.indexOf('n') >= 0) {
+                        newTop += newHeight;
+                        newTop -= MIN_SIZE;
+                    }
+                    newHeight = MIN_SIZE;
+                }
+                if (newWidth < MIN_SIZE) {
+                    if (direction.indexOf('w') >= 0) {
+                        newLeft += newWidth; 
+                        newLeft -= MIN_SIZE;
+                    }
+                    newWidth = MIN_SIZE;
+                }
+
+                this.formatSize(newTop, newLeft, newWidth, newHeight);
+            }
           }
       },
       endResize(e) {
@@ -233,17 +257,20 @@ export default {
       },
       startRotate(e) {
           e.srcEvent.stopPropagation();
-          this.recordStartPos();
-          this.eventData.rotate = true;
-          this.eventData.select = true;
-          this.notifySelect();
 
-          this.editorData.currentAction.rotate = true;
+          if (this.listeners.rotate == true) {
+            this.recordStartPos();
+            this.eventData.rotate = true;
+            this.eventData.select = true;
+            this.notifySelect();
+
+            this.editorData.currentAction.rotate = true;
+          }
       },
       rotating(e) {
         e.srcEvent.stopPropagation();
         if (this.eventData.rotate) {
-            let elRect = this.$el.getBoundingClientRect();
+            let elRect = this.eventData.originElementRect;
             let centerTop = elRect.top + this.eventData.originElementPos.height / 2;
             let centerLeft = elRect.left + this.eventData.originElementPos.width / 2;
 
@@ -291,48 +318,71 @@ export default {
       },
       startMove(e) {
           e.srcEvent.stopPropagation();
-          this.recordStartPos();
 
-          if (this.elementType == 'text' && this.textIsEditing == true) {
-              this.eventData.move = false;
-          } else {
-              this.eventData.move = true;
-              this.notifySelect();
+          if (this.listeners.move == true) {
+            if (this.elementType == 'text' && this.textIsEditing == true) {
+                this.eventData.move = false;
+            } else {
 
-              this.editorData.currentAction.move = true;
+                let rectOriginEl = this.$el.getBoundingClientRect();
+                let rectEditorRect = this.bodyParent.$el.getBoundingClientRect();
+
+                let maxOffset = {
+                    left: rectOriginEl.left - rectEditorRect.left,
+                    top: rectOriginEl.top - rectEditorRect.top,
+                    right: rectEditorRect.right - rectOriginEl.right,
+                    bottom: rectEditorRect.bottom - rectOriginEl.bottom
+                };
+                this.eventData.eventMaxOffset = maxOffset;
+
+                this.recordStartPos();
+                this.eventData.move = true;
+                this.notifySelect();
+
+                this.editorData.currentAction.move = true;
+            }
           }
       },
       moving(e) {
         e.srcEvent.stopPropagation();
-        if (this.eventData.move) {        
-            var offset = {
+
+        if (this.eventData.move == true) {        
+            let offset = {
                 top: 0,
                 left: 0
             };
 
-            let elRect = this.$el.getBoundingClientRect();
-            let editorBodyRect = this.editorBody.getBoundingClientRect();
+            let originEl = this.eventData.originElementPos;
+            let maxOffset = this.eventData.eventMaxOffset;
 
-            let maxOffsetLeft = this.eventData.originElementRect.left - editorBodyRect.left;
-            let maxOffsetRight = editorBodyRect.right - this.eventData.originElementRect.right;
-            if (-e.deltaX >= maxOffsetLeft) {
-                offset.left = -maxOffsetLeft;
-            } else if (e.deltaX >= maxOffsetRight) {
-                offset.left = maxOffsetRight;
-            } else {
-                offset.left = e.deltaX;
+            if (e.deltaX < 0) {
+                if (-e.deltaX >= maxOffset.left) {
+                    offset.left = -maxOffset.left;
+                } else {
+                    offset.left = e.deltaX;
+                }
+            } else if (e.deltaX > 0) {
+                if (e.deltaX >= maxOffset.right) {
+                    offset.left = maxOffset.right;
+                } else {
+                    offset.left = e.deltaX;
+                }
             }
 
-            let maxOffsetTop = this.eventData.originElementRect.top - editorBodyRect.top;
-            let maxOffsetBottom = editorBodyRect.bottom - this.eventData.originElementRect.bottom;
-            if (-e.deltaY >= maxOffsetTop) {
-                offset.top = -maxOffsetTop;
-            } else if (e.deltaY >= maxOffsetBottom) {
-                offset.top = maxOffsetBottom;
-            } else {
-                offset.top = e.deltaY;
+            if (e.deltaY < 0) {
+                if (-e.deltaY >= maxOffset.top) {
+                    offset.top = -maxOffset.top;
+                } else {
+                    offset.top = e.deltaY;
+                }
+            } else if (e.deltaY > 0) {
+                if (e.deltaY >= maxOffset.bottom) {
+                    offset.top = maxOffset.bottom;
+                } else {
+                    offset.top = e.deltaY;
+                }
             }
-            
+
             this.eventData.moveOffset = offset;
             this.$el.style.transform = `translate3d(${offset.left}px, ${offset.top}px, 1px) rotate(${this.value.rotate}deg)`;
         }
@@ -340,44 +390,18 @@ export default {
       endMove(e) {
           e.srcEvent.stopPropagation();
           if (this.eventData.move) {
-            this.value.left = this.eventData.originElementPos.left + this.eventData.moveOffset.left;
-            this.value.top = this.eventData.originElementPos.top + this.eventData.moveOffset.top;
+            this.value.left = parseFloat((this.eventData.originElementPos.left + this.eventData.moveOffset.left).toFixed(2));
+            this.value.top = parseFloat((this.eventData.originElementPos.top + this.eventData.moveOffset.top).toFixed(2));
             this.$el.style.transform = `rotate(${this.value.rotate}deg)`;
             this.eventData.move = false;
 
             this.editorData.currentAction.move = false;
           }
-      },
-      // 记录元素起始位置
-      recordStartPos() {
-          let { top, left, width, height } = this.value;
-          this.eventData.originElementPos.top = top;
-          this.eventData.originElementPos.left = left;
-          this.eventData.originElementPos.width = width;
-          this.eventData.originElementPos.height = height;
-
-          this.eventData.originElementRect = this.$el.getBoundingClientRect();
       }
   },
   computed: {
-      editorWrapper() {
-          let parentEl = this.$el;
-          while(parentEl.className != 'editor-wrapper') {
-              parentEl = parentEl.parentElement;
-          }
-
-          return parentEl;
-      },
-      editorBody() {
-          let parentEl = this.$el;
-          while(parentEl.className != 'editor-body') {
-              parentEl = parentEl.parentElement;
-          }
-
-          return parentEl;
-      },
       currentPageSize() {
-          return this.$parent.$parent.pageSize;;
+          return this.$parent.$parent.pageSize;
       },
       editorData() {
           return this.editorParent.getEditorData();

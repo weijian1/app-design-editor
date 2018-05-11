@@ -1,5 +1,5 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :listeners="borderListeners">
       <div class="content-inner" v-if="value.classify.property" ref="itemList" :style="contentInnerCss | Obj2CSS">
           <div class="classify-item" v-for="(item,index) in value.classify.property.items" 
                 :key="index"
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import ElementBorder from './../ElementNotResizeBorder.vue'
+import ElementBorder from './../ElementBorder.vue'
 import MixinElement from './../Mixins/Element'
 import Obj2CSS from './../Filters/Obj2CSS'
 import JQuery from 'jquery'
@@ -28,6 +28,12 @@ export default {
     mixins: [ MixinElement ],
     data() {
         return {
+            borderListeners: {
+                move: true,
+                rotate: true,
+                resize: false,
+                resizeDirection: []
+            },
             contentInnerCss: {
                 left: 0
             }

@@ -106,8 +106,6 @@ export default {
         height: 603px;
         position: relative;
         background-color: white;
-        border-left: 1px solid #f2f2f2;
-        border-right: 1px solid #f2f2f2;
-        border-bottom: 1px solid #f2f2f2;
+        box-shadow: -1px 1px 0 #f2f2f2, 1px 1px 0 #f2f2f2;
     }
 </style>

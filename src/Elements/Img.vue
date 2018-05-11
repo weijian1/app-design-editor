@@ -1,7 +1,7 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type">
         <img class="content-inner" :src="value.img.property.src" />
-        <span class="img-wrapper" :style="imgCss"></span>
+        <span class="img-wrapper" :style="imgCss | Obj2CSS"></span>
   </element-border>
 </template>
 
@@ -35,7 +35,8 @@ export default {
     computed: {
         imgCss() {
             return {
-                backgroundImage: `url('${this.value.img.property.src}')`,
+                borderRadius: this.value.base_css.borderRadius,
+                backgroundImage: this.value.img.property.src,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'

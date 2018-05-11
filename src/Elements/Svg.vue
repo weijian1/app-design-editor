@@ -1,7 +1,7 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type">
     <div class="content-inner" v-html="svg_html"></div>
-    <span class="svg-wrapper" :style="imgCss"></span>
+    <span class="svg-wrapper" :style="imgCss | Obj2CSS"></span>
   </element-border>
 </template>
 
@@ -45,7 +45,8 @@ export default {
     computed: {
         imgCss() {
             return {
-                backgroundImage: `url('${this.value.svg.property.svgBase64}')`,
+                borderRadius: this.value.base_css.borderRadius,
+                backgroundImage: this.value.svg.property.svgBase64,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center'

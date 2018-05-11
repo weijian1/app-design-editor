@@ -1,5 +1,5 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type">
     <div class="content-inner">
         <span class="play-btn"><span></span></span>
     </div>

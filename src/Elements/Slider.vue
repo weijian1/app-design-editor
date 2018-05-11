@@ -1,5 +1,5 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type">
       <template v-if="value.slider.property">
         <div class="content-inner">
             <img v-if="currentItem != null" :style="imgCss | Obj2CSS" :src="currentItem.url" width="100%" height="100%" />

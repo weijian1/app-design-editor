@@ -1,5 +1,5 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :listeners="borderListeners">
     <div class="content-inner" v-if="value.imagelist.property" ref="itemList" :style="contentInnerCss | Obj2CSS">
         <div class="imagelist-item" v-for="(item,index) in value.imagelist.property.items" 
             :key="index" :style="{
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import ElementBorder from './../ElementBorderResizeWidth.vue'
+import ElementBorder from './../ElementBorder.vue'
 import MixinElement from './../Mixins/Element'
 import Obj2CSS from './../Filters/Obj2CSS'
 import JQuery from 'jquery'
@@ -53,6 +53,12 @@ export default {
     mixins: [ MixinElement ],
     data() {
         return {
+            borderListeners: {
+                move: true,
+                rotate: true,
+                resize: true,
+                resizeDirection: ['w', 'e']
+            },
             contentInnerCss: {
                 left: 0
             }

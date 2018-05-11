@@ -1,5 +1,5 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.element_type" :textIsEditing="isEditing">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :textIsEditing="isEditing">
     <div class="content-inner" @dblclick="showEditor" v-html="value.content"></div>
   </element-border>
 </template>
@@ -12,7 +12,6 @@ import JQuery from 'jquery'
 import Bootstrap from 'bootstrap'
 import SummerNote from 'summernote'
 import 'summernote/dist/lang/summernote-zh-CN'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import 'summernote/dist/summernote.css'
 
 export default {

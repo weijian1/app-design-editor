@@ -29,19 +29,6 @@ export default {
             
         }
     },
-    mounted() {
-        if (this.amapConfig && this.amapConfig.apiKey != '') {
-            let scriptEl = document.createElement("script");
-            scriptEl.src = `http://webapi.amap.com/maps?v=1.4.6&key=${this.amapConfig.apiKey}`;
-
-            scriptEl.addEventListener('load', () => {
-                this.loading = false;
-                this.$emit('editorready');
-            }, false);
-
-            document.getElementsByTagName("head")[0].appendChild(scriptEl);
-        }
-    },
     data() {
         return {
             editorData: {
@@ -54,7 +41,49 @@ export default {
                     move: false
                 }
             },
-            loading: true
+            loading: true,
+            loadedItem: 0,
+            totalLoadItem: 0
+        }
+    },
+    created() {
+        let processLoaded = () => {
+            this.loadedItem++;
+            if (this.loadedItem == this.totalLoadItem) {
+                this.loading = false;
+                this.$emit('editorready');
+            }
+        };
+        let headEl = document.getElementsByTagName("head")[0];
+
+        if (this.amapConfig && this.amapConfig.apiKey != '') {
+            let scriptEl = document.createElement("script");
+            scriptEl.id = 'amapsdk';
+            scriptEl.src = `http://webapi.amap.com/maps?v=1.4.6&key=${this.amapConfig.apiKey}`;
+            scriptEl.addEventListener('load', processLoaded, false);
+            headEl.appendChild(scriptEl);
+
+            this.totalLoadItem++;
+        }
+
+        let linkEl = document.createElement("link");
+        linkEl.id = 'bootstrapCss';
+        linkEl.rel = 'stylesheet';
+        linkEl.href = require('!file-loader?name=static/css/[name].[ext]!bootstrap/dist/css/bootstrap.min.css');;
+        linkEl.addEventListener('load', processLoaded, false);
+        headEl.appendChild(linkEl);
+
+        this.totalLoadItem++;
+    },
+    beforeDestroy() {
+        // 当编辑器被移除前，需要将原先加载进来的资源文件删除
+        let aMapSdkEl = document.getElementById("amapsdk");
+        let bootstrapCssEl = document.getElementById("bootstrapCss");
+        if (aMapSdkEl.tagName.toLowerCase() == 'script') {
+            aMapSdkEl.remove();
+        }
+        if (bootstrapCssEl.tagName.toLowerCase() == 'link') {
+            bootstrapCssEl.remove();
         }
     },
     methods: {
