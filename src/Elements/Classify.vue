@@ -106,9 +106,11 @@ export default {
         Obj2CSS
     },
     mounted() {
-        this.moveViewFromItemIndex(this.value.classify.property.currentIndex);
         this.$watch('value.classify.property.currentIndex', (newVal, oldVal) => {
             this.moveViewFromItemIndex(newVal);
+        });
+        this.$nextTick(() => {
+            this.moveViewFromItemIndex(this.value.classify.property.currentIndex);
         });
     }
 }

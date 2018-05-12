@@ -15,6 +15,7 @@ import ElementMap from './Elements/Map.vue'
 import ElementSlider from './Elements/Slider.vue'
 import ElementClassify from './Elements/Classify.vue'
 import ElementImagelist from './Elements/Imagelist.vue'
+import ElementTabbar from './Elements/Tabbar.vue'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
 
@@ -28,7 +29,8 @@ export default {
         ElementMap,
         ElementSlider,
         ElementClassify,
-        ElementImagelist
+        ElementImagelist,
+        ElementTabbar
     },
     data() {
         return {

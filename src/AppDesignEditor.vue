@@ -130,15 +130,24 @@ export default {
                 this.bodyChildren.$refs[`component_${this.editorData.select.elementIndex}`][0].unselect();
             }
 
+            if (options.elementable_type == 'tabbar') {
+                let tabbarCount = this.value.elements.filter(item => item.elementable_type == 'tabbar');
+                if (tabbarCount != 0) {
+                    return false;
+                }
+            }
+
             this.value.elements.push(options);
 
-            setTimeout(() => {
+            this.$nextTick(() => {
                 let lastElementIndex = this.value.elements.length - 1;
                 this.bodyChildren.$refs[`component_${lastElementIndex}`][0].select();
 
                 this.elementChange(lastElementIndex);
                 this.$emit('elementchange', this.editorData.select);
-            }, 10);
+            });
+
+            return true;
         }
     }
 }

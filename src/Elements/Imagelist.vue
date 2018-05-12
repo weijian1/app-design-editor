@@ -124,7 +124,6 @@ export default {
         Obj2CSS
     },
     mounted() {
-        this.moveViewFromItemIndex(this.value.imagelist.property.currentIndex);
         this.$watch('value.imagelist.property.currentIndex', (newVal, oldVal) => {
             this.moveViewFromItemIndex(newVal);
         });
@@ -132,7 +131,6 @@ export default {
         let invokeWatch = (newVal, oldVal) => {
             this.calcCurrentHeight();
         };
-        this.calcCurrentHeight();
 
         // 当高度改变和设置开关的时候重新计算高度
         this.$watch('value.imagelist.property.image_base_setting.height', invokeWatch);
@@ -143,6 +141,11 @@ export default {
         this.$watch('value.imagelist.property.isShowTitle', invokeWatch);
         this.$watch('value.imagelist.property.isShowSubTitle', invokeWatch);
         this.$watch('value.imagelist.property.isShowIntroduce', invokeWatch);
+
+        this.$nextTick(() => {
+            this.moveViewFromItemIndex(this.value.imagelist.property.currentIndex);
+            this.calcCurrentHeight();
+        });
     }
 }
 </script>
