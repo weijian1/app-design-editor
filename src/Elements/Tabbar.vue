@@ -4,9 +4,10 @@
           <div class="tabbar-item" v-for="(item, index) in value.tabbar.property.items" :key="index"
                :style="{
                    backgroundColor: item.backgroundColor,
-                   textAlign: item.titleTextAlign,
+                   alignItems: item.titleTextAlign == 'left' ? 'flex-start' : item.titleTextAlign == 'right' ? 'flex-end' : 'center',
                    color: item.titleColor,
                    fontSize: item.titleFontSize,
+                   fontStyle: item.titleFontStyle,
                    fontWeight: item.titleFontWeight,
                    textDecoration: item.titleTextDecoration
                } | Obj2CSS">
@@ -129,7 +130,7 @@ export default {
             height: 26px;
             margin: 0 auto;
             background-repeat: no-repeat;
-            background-size: cover;
+            background-size: contain;
         }
     }
 }
