@@ -1,5 +1,5 @@
 <template>
-    <div class="design-editor">
+    <div class="design-editor" :class="{'loading': loading}">
         <editor-wrapper v-model="value" :header="appHeader" :footer="appFooter"></editor-wrapper>
     </div>
 </template>
@@ -162,6 +162,9 @@ export default {
         background: #f5f5f4;
         user-select: none;
         overflow-y: scroll;
+    }
+    .loading {
+        pointer-events: none;
     }
 </style>
 
