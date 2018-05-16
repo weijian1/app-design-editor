@@ -1,10 +1,10 @@
 <template>
   <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type">
-      <template v-if="value.input.property && value.input.property.inputable_type == 'text'">
+      <template v-if="value.input.property && value.input.property.inputable_type == 'inputText'">
           <input class="content-inner" 
                  type="text"
-                 :required="value.input.property.base_property.required"
-                 :placeholder="value.input.property.base_property.placeholder"
+                 :required="value.input.property.required"
+                 :placeholder="value.input.property.placeholder"
                  :style="inputCss">
       </template>
   </element-border>

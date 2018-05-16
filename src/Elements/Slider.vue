@@ -6,6 +6,7 @@
         </div>
         <div class="indicator-wrapper" v-if="value.slider.property.hasIndicator == 1">
             <span v-for="(item,index) in value.slider.property.items" 
+                  :key="index"
                   :style="index == value.slider.property.currentIndex ? 
                           {background: value.slider.property.indicatorActiveColor} : 
                           {background: value.slider.property.indicatorColor}"

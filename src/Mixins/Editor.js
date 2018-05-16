@@ -1,6 +1,6 @@
 let getElementByParent = (el, parentClassName) => {
     let parentEl = el.parentElement;
-    while (parentEl.className != parentClassName.substr(1) && parentEl.parentElement != null) {
+    while (!parentEl.classList.contains(parentClassName.substr(1)) && parentEl.parentElement != null) {
         parentEl = parentEl.parentElement;
     }
     return parentEl;
