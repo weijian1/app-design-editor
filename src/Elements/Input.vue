@@ -45,7 +45,11 @@ export default {
                 fontStyle: this.value.base_css.fontStyle,
                 textDecoration: this.value.base_css.textDecoration,
                 textAlign: this.value.base_css.textAlign,
-                color: this.value.base_css.color
+                color: this.value.base_css.color,
+                paddingTop: this.value.base_css.paddingTop,
+                paddingLeft: this.value.base_css.paddingLeft,
+                paddingBottom: this.value.base_css.paddingBottom,
+                paddingRight: this.value.base_css.paddingRight,
             };
         }
     },
