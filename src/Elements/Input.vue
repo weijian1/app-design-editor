@@ -53,7 +53,7 @@
       </template>
       <template v-else-if="value.input.property && value.input.property.inputable_type == 'inputSelect'">
           <div class="content-inner input-select">
-              <span class="select-text">{{ value.input.property.inputable.property.items[currentIndex].text }}</span>
+              <span class="select-text">{{ value.input.property.inputable.property.items[currentIndex].title }}</span>
               <div class="triangle-facing-right" :style="{ borderColor: value.input.property.inputable.property.arrowColor } | obj2CSS"></div>  
           </div>
       </template>

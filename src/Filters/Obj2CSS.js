@@ -18,7 +18,7 @@ export default function(value, action, actionProperty = []) {
         }
 
         if (key == 'lineHeight') {
-            if (value <= 2) {
+            if (propValue <= 2) {
                 resultCss[key] = propValue;
             } else {
                 resultCss[key] = `${propValue}px`;
