@@ -1,12 +1,12 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :listeners="borderListeners">
       <div class="content-inner" ref="map">
       </div>
   </element-border>
 </template>
 
 <script>
-import ElementBorder from './../ElementImgBorder.vue'
+import ElementBorder from './../ElementBorder.vue'
 import MixinElement from './../Mixins/Element'
 import MixinEditor from './../Mixins/Editor'
 import JQuery from 'jquery'
@@ -17,7 +17,14 @@ export default {
         return {
             isReady: false,
             map: null,
-            marker: null
+            marker: null,
+            borderListeners: {
+                move: true,
+                rotate: true,
+                resize: true,
+                resizeEqualProportion: true,
+                resizeDirection: []
+            }
         }
     },
     components: {

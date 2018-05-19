@@ -33,12 +33,7 @@ export default {
     watch: {
         selected(newValue, oldValue) {
             if (newValue == false && this.isEditing == true) {
-                // 销毁summernote
-                $(this.$el).find('.content-inner').summernote('destroy');
-                if (this.tempContent != '') {
-                    this.value.content = this.tempContent;
-                    this.tempContent = '';
-                }
+                this.destroyEditor();
                 this.isEditing = false;
             }
         }
@@ -99,6 +94,14 @@ export default {
                     }
                 }
             });
+        },
+        destroyEditor() {
+            // 销毁summernote
+            $(this.$el).find('.content-inner').summernote('destroy');
+            if (this.tempContent != '') {
+                this.value.content = this.tempContent;
+                this.tempContent = '';
+            }
         }
     }
 }

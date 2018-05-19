@@ -85,6 +85,8 @@ export default {
         if (bootstrapCssEl.tagName.toLowerCase() == 'link') {
             bootstrapCssEl.remove();
         }
+
+        this.unselectElemnt();
     },
     methods: {
         // methods
@@ -92,8 +94,14 @@ export default {
             return this.editorData;
         },
         unselectElemnt() {
-            if (this.editorData.select.elementIndex !== null) {
-                this.bodyChildren.$refs[`component_${this.editorData.select.elementIndex}`][0].unselect();
+            let selectElementIndex = this.editorData.select.elementIndex;
+            if (selectElementIndex !== null) {
+                this.bodyChildren.$refs[`component_${selectElementIndex}`][0].unselect();
+
+                let element = this.value.elements[selectElementIndex];
+                if (element.elementable_type == 'text') {
+                    this.bodyChildren.$refs[`component_${selectElementIndex}`][0].destroyEditor();
+                }
 
                 this.elementChange(null);
                 this.$emit('elementchange', this.editorData.select);

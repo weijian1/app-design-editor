@@ -14,8 +14,10 @@
         <slot></slot>
     </div>
     <template v-if="mouseEnter || selected">
-        <div class="bar bar-radius bar-rotate" v-panstart="startRotate" v-panmove="rotating" v-panend="endRotate"></div>
-        <div class="bar bar-line"></div>
+        <template v-if="listeners.rotate">
+            <div class="bar bar-radius bar-rotate" v-panstart="startRotate" v-panmove="rotating" v-panend="endRotate"></div>
+            <div class="bar bar-line"></div>
+        </template>
         <div class="bar bar-n directoin-n" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
         <div class="bar bar-s directoin-s" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
         <div class="bar bar-w directoin-w" v-panstart="startResize" v-panmove="resizing" v-panend="endResize"></div>
@@ -59,6 +61,7 @@ export default {
             return {
                 resize: true,
                 resizeDirection: [],
+                resizeEqualProportion: false,
                 rotate: true,
                 move: true
             };
@@ -172,6 +175,8 @@ export default {
           if (this.listeners.resize == true) {
             this.initStartEventData(e);
 
+            let direction = this.eventData.currentDirection;
+            let borderRatio = this.eventData.originElementRect.width / this.eventData.originElementRect.height;
             let rectOriginEl = this.$el.getBoundingClientRect();
             let rectEditorRect = this.bodyParent.$el.getBoundingClientRect();
 
@@ -181,6 +186,34 @@ export default {
                 right: rectEditorRect.right - rectOriginEl.right,
                 bottom: rectEditorRect.bottom - rectOriginEl.bottom
             };
+
+            if (this.listeners.resizeEqualProportion == true) {
+                if (direction == 'se') {
+                    if (maxOffset.bottom < maxOffset.right / borderRatio) {
+                        maxOffset.right = maxOffset.bottom * borderRatio;
+                    } else {
+                        maxOffset.bottom = maxOffset.right / borderRatio;
+                    }
+                } else if (direction == 'sw') {
+                    if (maxOffset.bottom < maxOffset.left / borderRatio) {
+                        maxOffset.left = maxOffset.bottom * borderRatio;
+                    } else {
+                        maxOffset.bottom = maxOffset.left / borderRatio;
+                    }
+                } else if (direction == 'nw') {
+                    if (maxOffset.top < maxOffset.left / borderRatio) {
+                        maxOffset.left = maxOffset.top * borderRatio;
+                    } else {
+                        maxOffset.top = maxOffset.left / borderRatio;
+                    }
+                } else if (direction == 'ne') {
+                    if (maxOffset.top < maxOffset.right / borderRatio) {
+                        maxOffset.right = maxOffset.top * borderRatio;
+                    } else {
+                        maxOffset.top = maxOffset.right / borderRatio;
+                    }
+                } 
+            }
 
             this.eventData.eventMaxOffset = maxOffset;
 
@@ -197,6 +230,7 @@ export default {
           if (this.eventData.resize) {
             let direction = this.eventData.currentDirection;
             let allowDirection = this.listeners.resizeDirection.filter(item => item == direction);
+            let borderRatio = this.eventData.originElementRect.width / this.eventData.originElementRect.height;
 
             if (this.listeners.resizeDirection.length == 0 || allowDirection.length == 1) {
                 let originElementPos = this.eventData.originElementPos;
@@ -210,16 +244,38 @@ export default {
                 let maxOffset = this.eventData.eventMaxOffset;
                 const MIN_SIZE = 2;
 
-                for (let i = 0; i < direction.length; i++) {
-                    let commonDefine = this.eventCommonDefine[direction[i]];
-                    let delta = e[commonDefine.axis];
-                    delta = direction[i] == 'n' || direction[i] == 'w' ? -delta : delta;
-                    let offsetLength = maxOffset[commonDefine.direction];
+                if (this.listeners.resizeEqualProportion == false) {
+                    for (let i = 0; i < direction.length; i++) {
+                        let commonDefine = this.eventCommonDefine[direction[i]];
+                        let delta = e[commonDefine.axis];
+                        delta = direction[i] == 'n' || direction[i] == 'w' ? -delta : delta;
+                        let offsetLength = maxOffset[commonDefine.direction];
 
-                    if (delta >= offsetLength) {
-                        offset[commonDefine.direction] = offsetLength;
-                    } else {
-                        offset[commonDefine.direction] = delta;
+                        if (delta >= offsetLength) {
+                            offset[commonDefine.direction] = offsetLength;
+                        } else {
+                            offset[commonDefine.direction] = delta;
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < 1; i++) {
+                        let commonDefine = this.eventCommonDefine[direction[i]];
+                        let delta = e[commonDefine.axis];
+                        delta = direction[i] == 'n' || direction[i] == 'w' ? -delta : delta;
+                        let offsetLength = maxOffset[commonDefine.direction];
+
+                        if (delta >= offsetLength) {
+                            offset[commonDefine.direction] = offsetLength;
+                        } else {
+                            offset[commonDefine.direction] = delta;
+                        }
+                    }
+
+                    if (direction.length == 2) {
+                        let sourceCommonDefine = this.eventCommonDefine[direction[0]];
+                        let commonDefine = this.eventCommonDefine[direction[1]];
+    
+                        offset[commonDefine.direction] = offset[sourceCommonDefine.direction] * borderRatio;
                     }
                 }
                 

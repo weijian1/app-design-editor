@@ -1,12 +1,12 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :listeners="borderListeners">
     <div class="content-inner" v-html="svg_html"></div>
     <span class="svg-wrapper" :style="imgCss | Obj2CSS"></span>
   </element-border>
 </template>
 
 <script>
-import ElementBorder from './../ElementImgBorder.vue'
+import ElementBorder from './../ElementBorder.vue'
 import MixinElement from './../Mixins/Element'
 import Obj2CSS from './../Filters/Obj2CSS'
 import Base64Util from './../Utils/Base64'
@@ -16,7 +16,14 @@ export default {
     mixins: [ MixinElement ],
     data() {
         return {
-            svg_html: ''
+            svg_html: '',
+            borderListeners: {
+                move: true,
+                rotate: true,
+                resize: true,
+                resizeEqualProportion: true,
+                resizeDirection: []
+            }
         }
     },
     components: {
