@@ -74,12 +74,15 @@ export default {
             let maxChildrenRect = {};
 
             for (let i = 0, len = elChildren.length; i < len; i++) {
-                let rectChildren = elChildren[i].getBoundingClientRect();
-                let childrenTopHeight = rectChildren.top + rectChildren.height;
+                // tabbar 不加入判断
+                if (elChildren[i].__vue__ && elChildren[i].__vue__.elementType != 'tabbar') {
+                    let rectChildren = elChildren[i].getBoundingClientRect();
+                    let childrenTopHeight = rectChildren.top + rectChildren.height;
 
-                if (childrenTopHeight > maxChildrenTopHeight) {
-                    maxChildrenTopHeight = childrenTopHeight;
-                    maxChildrenRect = rectChildren;
+                    if (childrenTopHeight > maxChildrenTopHeight) {
+                        maxChildrenTopHeight = childrenTopHeight;
+                        maxChildrenRect = rectChildren;
+                    }
                 }
             }
 

@@ -1,0 +1,10 @@
+const KEYCODE = {
+    KEYCODE_LEFT: 37,
+    KEYCODE_UP: 38,
+    KEYCODE_RIGHT: 39,
+    KEYCODE_DOWN: 40,
+    KEYCODE_DELETE: 46,
+    KEYCODE_ESC: 27
+};
+
+export default KEYCODE;
