@@ -66,13 +66,19 @@ export default {
             });
         },
         moveElementItem(e) {
+            let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
+            let elementComponent =  this.$refs[`component_${elementIndex}`][0].$children[0];
+
+            if (elementComponent.elementType == 'text' && elementComponent.textIsEditing == true) {
+                return true;
+            }
+
             for (let key in keyCodeUtil) {
                 if (keyCodeUtil[key] == e.keyCode) {
                     e.preventDefault();
                 }
-            }            
+            }
 
-            let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
             if (e.keyCode == keyCodeUtil.KEYCODE_DELETE) {
                 this.editorParent.unselectElemnt();
                 this.value.elements.splice(elementIndex, 1);
