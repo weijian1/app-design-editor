@@ -1,5 +1,5 @@
 <template>
-    <div class="design-editor" :class="{'loading': loading}">
+    <div class="design-editor" :class="{'loading': loading}" @click="onEditorClick">
         <editor-wrapper v-model="value" :header="appHeader" :footer="appFooter"></editor-wrapper>
     </div>
 </template>
@@ -156,6 +156,12 @@ export default {
             });
 
             return true;
+        },
+        onEditorClick(e) {
+            // 如果点击空白地方，则取消点击
+            if (e.target == this.$el) {
+                this.unselectElemnt();
+            }            
         }
     }
 }
