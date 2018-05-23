@@ -18,7 +18,7 @@ export default {
             return el ? el.__vue__ : null;
         },
         wrapperChildren() {
-            let el = direction == getElementByChildren(this.$el, '.editor-wrapper');
+            let el = getElementByChildren(this.$el, '.editor-wrapper');
             return el ? el.__vue__ : null;
         },
         wrapperParent() {

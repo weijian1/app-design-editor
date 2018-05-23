@@ -169,10 +169,14 @@ export default {
             return true;
         },
         onEditorClick(e) {
-            // 如果点击空白地方，则取消点击
-            if (e.target == this.$el) {
-                this.unselectElemnt();
-            }            
+            // 根据坐标判断是否点击外部元素
+            let wrapperRect = this.wrapperChildren.$el.getBoundingClientRect();
+
+            if (e.pageX <= wrapperRect.left || e.pageX >= wrapperRect.right || e.pageY <= wrapperRect.top || e.pageY >= wrapperRect.bottom) {
+                if (e.target == this.$el) {
+                    this.unselectElemnt();
+                }
+            }
         }
     }
 }
