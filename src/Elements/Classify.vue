@@ -124,6 +124,7 @@ export default {
 .content-inner {
     position: relative;
     width: auto!important;
+    min-width: 100%;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;

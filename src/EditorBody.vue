@@ -67,25 +67,27 @@ export default {
         },
         moveElementItem(e) {
             let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
-            let elementComponent =  this.$refs[`component_${elementIndex}`][0].$children[0];
+            if (elementIndex != null) {
+                let elementComponent =  this.$refs[`component_${elementIndex}`][0].$children[0];
 
-            if (elementComponent.elementType == 'text' && elementComponent.textIsEditing == true) {
-                return true;
-            }
-
-            for (let key in keyCodeUtil) {
-                if (keyCodeUtil[key] == e.keyCode) {
-                    e.preventDefault();
+                if (elementComponent.elementType == 'text' && elementComponent.textIsEditing == true) {
+                    return true;
                 }
-            }
 
-            if (e.keyCode == keyCodeUtil.KEYCODE_DELETE) {
-                this.editorParent.unselectElemnt();
-                this.value.elements.splice(elementIndex, 1);
-            } else if (e.keyCode == keyCodeUtil.KEYCODE_ESC) {
-                this.editorParent.unselectElemnt();
-            } else if (e.keyCode >= 37 && e.keyCode <= 40) {
-                this.processMoveItem(e.keyCode);
+                for (let key in keyCodeUtil) {
+                    if (keyCodeUtil[key] == e.keyCode) {
+                        e.preventDefault();
+                    }
+                }
+
+                if (e.keyCode == keyCodeUtil.KEYCODE_DELETE) {
+                    this.editorParent.unselectElemnt();
+                    this.value.elements.splice(elementIndex, 1);
+                } else if (e.keyCode == keyCodeUtil.KEYCODE_ESC) {
+                    this.editorParent.unselectElemnt();
+                } else if (e.keyCode >= 37 && e.keyCode <= 40) {
+                    this.processMoveItem(e.keyCode);
+                }
             }
         },
         processMoveItem(direction) {

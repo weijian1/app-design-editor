@@ -26,7 +26,13 @@ export default {
     mixins: [ MixinElement ],
     data() {
         return {
-
+            borderListeners: {
+                move: true,
+                rotate: true,
+                resize: true,
+                resizeEqualProportion: true,
+                resizeDirection: []
+            }
         }
     },
     components: {

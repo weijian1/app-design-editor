@@ -62,8 +62,18 @@ export default {
             scriptEl.src = `http://webapi.amap.com/maps?v=1.4.6&key=${this.amapConfig.apiKey}`;
             scriptEl.addEventListener('load', processLoaded, false);
             headEl.appendChild(scriptEl);
-
             this.totalLoadItem++;
+
+            if (this.amapConfig.externalSdk) {
+                scriptEl.addEventListener('load', () => {
+                    let scriptUiEl = document.createElement("script");
+                    scriptUiEl.id = 'amap-ui';
+                    scriptUiEl.src = `http://webapi.amap.com/ui/1.0/main.js`;
+                    scriptUiEl.addEventListener('load', processLoaded, false);
+                    headEl.appendChild(scriptUiEl);
+                    this.totalLoadItem++;
+                }, false);
+            }
         }
 
         let linkEl = document.createElement("link");
@@ -138,6 +148,7 @@ export default {
                 this.bodyChildren.$refs[`component_${this.editorData.select.elementIndex}`][0].unselect();
             }
 
+            // 不允许添加多个tabbar
             if (options.elementable_type == 'tabbar') {
                 let tabbarCount = this.value.elements.filter(item => item.elementable_type == 'tabbar');
                 if (tabbarCount != 0) {
