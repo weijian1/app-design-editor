@@ -60,20 +60,12 @@ export default {
         if (this.amapConfig && this.amapConfig.apiKey != '') {
             let scriptEl = document.createElement("script");
             scriptEl.id = 'amapsdk';
-            scriptEl.src = `http://webapi.amap.com/maps?v=1.4.6&key=${this.amapConfig.apiKey}`;
-            scriptEl.addEventListener('load', processLoaded, false);
+            scriptEl.src = `http://webapi.amap.com/maps?v=1.4.6&key=${this.amapConfig.apiKey}&callback=onAmapSdkInit`;
             headEl.appendChild(scriptEl);
             this.totalLoadItem++;
 
-            if (this.amapConfig.externalSdk) {
-                scriptEl.addEventListener('load', () => {
-                    let scriptUiEl = document.createElement("script");
-                    scriptUiEl.id = 'amap-ui';
-                    scriptUiEl.src = `http://webapi.amap.com/ui/1.0/main.js`;
-                    scriptUiEl.addEventListener('load', processLoaded, false);
-                    headEl.appendChild(scriptUiEl);
-                    this.totalLoadItem++;
-                }, false);
+            window.onAmapSdkInit = () => {
+                processLoaded();
             }
         }
 
