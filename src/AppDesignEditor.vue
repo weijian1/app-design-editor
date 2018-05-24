@@ -8,6 +8,7 @@
 <script>
 import EditorWrapper from './EditorWrapper.vue'
 import EditorMinxin  from './Mixins/Editor'
+import EditorEvent from './Utils/EditorEvent'
 
 export default {
     name: 'app-design-editor',
@@ -141,6 +142,26 @@ export default {
             this.unselectElemnt();
             this.$emit('savebuttonclick');
         },
+        onDeleteElement() {
+            let editorEvent = new EditorEvent('deleteelement');
+            editorEvent.setElementIndex(this.editorData.select.elementIndex);
+            this.$emit('elementdelete', editorEvent);
+            return editorEvent;
+        },
+        onCopyElement() {
+            let editorEvent = new EditorEvent('copyelement');
+            editorEvent.setElementIndex(this.editorData.select.elementIndex);
+            this.$emit('elementcopy', editorEvent);
+            return editorEvent;
+        },
+        onPasteElement(clipboardElement) {
+            let editorEvent = new EditorEvent('pasteelement');
+            editorEvent.setElementIndex(null);
+            editorEvent.pasteElement = clipboardElement;
+
+            this.$emit('elementpaste', editorEvent);
+            return editorEvent;
+        },
 
         // api
         createElement(options) {
@@ -167,6 +188,10 @@ export default {
             });
 
             return true;
+        },
+        deleteElement(elementIndex) {
+            this.unselectElemnt();
+            this.value.elements.splice(elementIndex, 1);
         },
         onEditorClick(e) {
             // 根据坐标判断是否点击外部元素

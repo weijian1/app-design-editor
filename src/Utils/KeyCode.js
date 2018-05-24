@@ -4,7 +4,9 @@ const KEYCODE = {
     KEYCODE_RIGHT: 39,
     KEYCODE_DOWN: 40,
     KEYCODE_DELETE: 46,
-    KEYCODE_ESC: 27
+    KEYCODE_ESC: 27,
+    KEYCODE_C: 67,
+    KEYCODE_V: 86
 };
 
 export default KEYCODE;

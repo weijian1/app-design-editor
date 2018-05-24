@@ -445,6 +445,7 @@ export default {
       },
       endMove(e) {
           e.srcEvent.stopPropagation();
+          e.preventDefault();
           if (this.eventData.move) {
             this.value.left = parseFloat((this.eventData.originElementPos.left + this.eventData.moveOffset.left).toFixed(2));
             this.value.top = parseFloat((this.eventData.originElementPos.top + this.eventData.moveOffset.top).toFixed(2));

@@ -21,6 +21,7 @@ import ElementButton from './Elements/Button.vue'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
 import keyCodeUtil from './Utils/KeyCode'
+import Vue from 'vue'
 
 export default {
     mixins: [ EditorMinxin ],
@@ -39,7 +40,8 @@ export default {
     },
     data() {
         return {
-            selectElementIndex: null
+            selectElementIndex: null,
+            clipboardElement: null
         };
     },
     props: {
@@ -81,12 +83,30 @@ export default {
                 }
 
                 if (e.keyCode == keyCodeUtil.KEYCODE_DELETE) {
-                    this.editorParent.unselectElemnt();
-                    this.value.elements.splice(elementIndex, 1);
+                    let ret = this.editorParent.onDeleteElement();
+                    if (ret.cancelable == false) {
+                        this.editorParent.deleteElement(elementIndex);
+                    }
                 } else if (e.keyCode == keyCodeUtil.KEYCODE_ESC) {
                     this.editorParent.unselectElemnt();
                 } else if (e.keyCode >= 37 && e.keyCode <= 40) {
                     this.processMoveItem(e.keyCode);
+                }
+            }
+
+            if (e.ctrlKey == true && e.keyCode == keyCodeUtil.KEYCODE_C) {
+                // 按下了ctrl + c
+                let ret = this.editorParent.onCopyElement();
+                if (ret.cancelable == false) {
+                    this.copyElement();
+                }
+            } else if (e.ctrlKey == true && e.keyCode == keyCodeUtil.KEYCODE_V) {
+                // 按下了Ctrl + v
+                if (this.clipboardElement != null) {
+                    let ret = this.editorParent.onPasteElement(this.clipboardElement);
+                    if (ret.cancelable == false) {
+                        this.pasteElement();
+                    }
                 }
             }
         },
@@ -94,6 +114,9 @@ export default {
             let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
             let elementComponent =  this.$refs[`component_${elementIndex}`][0].$children[0];
             let e = {
+                preventDefault() {
+
+                },
                 srcEvent: {
                     stopPropagation() {
 
@@ -118,6 +141,34 @@ export default {
             elementComponent.startMove(e);
             elementComponent.moving(e);
             elementComponent.endMove(e);
+        },
+        copyElement() {
+            let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
+            let sourceElement = this.value.elements[elementIndex];
+
+            let elementData = this.clearElementId(sourceElement);
+            this.clipboardElement = JSON.parse(JSON.stringify(elementData));
+        },
+        pasteElement() {
+            let elementData = this.clipboardElement;
+            this.value.elements.push(elementData);
+        },
+        clearElementId(sourceElement) {
+            for (let key in sourceElement) {
+                if (key == 'id') {
+                    sourceElement[key] = 0;
+                } else if (typeof sourceElement[key] == 'object') {
+                    if (Array.isArray(sourceElement[key])) {
+                        for (let i = 0; i < sourceElement[key].length; i++) {
+                            this.clearElementId(sourceElement[key][i]);
+                        }
+                    } else {
+                        this.clearElementId(sourceElement[key]);
+                    }
+                }
+            }
+
+            return sourceElement;
         }
     },
     watch: {
