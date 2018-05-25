@@ -7,7 +7,7 @@
             <div class="editor-drag-tip"><i class="icon icon-down"></i><span>拖动调节页面高度</span><i class="icon icon-up"></i></div>
         </div>
       </div>
-    <button class="save-btn" @click="clickSave">
+    <button class="save-btn" title="保存模板" @click="clickSave">
         <i class="icon-save"></i>
     </button>
   </div>

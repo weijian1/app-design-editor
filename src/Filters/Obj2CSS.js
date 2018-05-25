@@ -5,7 +5,7 @@ export default function(value, action, actionProperty = []) {
 
     for (let key in value) {
         let propValue = value[key];
-        if (propValue == '') {
+        if (propValue === '' || propValue === null) {
             continue;
         }
 
