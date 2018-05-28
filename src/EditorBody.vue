@@ -21,6 +21,7 @@ import ElementButton from './Elements/Button.vue'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
 import keyCodeUtil from './Utils/KeyCode'
+import PlatformUtil from './Utils/Platform'
 import Vue from 'vue'
 
 export default {
@@ -77,12 +78,17 @@ export default {
                 }
 
                 for (let key in keyCodeUtil) {
-                    if (keyCodeUtil[key] == e.keyCode) {
+                    if (keyCodeUtil[key] == keyCodeUtil.KEYCODE_BACKSPACE) {
+                        if (PlatformUtil.getPlatform() == PlatformUtil.OSX) {
+                            e.preventDefault();
+                        }
+                    } else if (keyCodeUtil[key] == e.keyCode) {
                         e.preventDefault();
                     }
                 }
 
-                if (e.keyCode == keyCodeUtil.KEYCODE_DELETE) {
+                if (e.keyCode == keyCodeUtil.KEYCODE_DELETE || 
+                    (e.keyCode == keyCodeUtil.KEYCODE_BACKSPACE && PlatformUtil.getPlatform() == PlatformUtil.OSX)) {
                     let ret = this.editorParent.onDeleteElement();
                     if (ret.cancelable == false) {
                         this.editorParent.deleteElement(elementIndex);
