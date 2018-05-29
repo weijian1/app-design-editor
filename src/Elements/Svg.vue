@@ -35,18 +35,24 @@ export default {
         }
     },
     methods: {
-        updateSvg(newVal, oldVal) {
+        updateSvgColor(newVal, oldVal) {
             let svgEl = this.$el.querySelector(".content-inner svg");
             svgEl.style.fill = newVal;
 
             this.value.svg.property.svgBase64 = 'data:image/svg+xml;base64,' + Base64Util.encode(svgEl.parentElement.innerHTML);
+        },
+        updateBase64(newVal) {
+            this.svg_html = Base64Util.decode(newVal);
+            this.$el.querySelector('.content-inner').innerHTML = this.svg_html;
+            this.updateSvgColor(this.value.svg.property.fill, '');
         }
     },
     mounted() {
         this.svg_html = Base64Util.decode(this.value.svg.property.svgBase64);
-        this.$watch('value.svg.property.fill', this.updateSvg);
+        this.$watch('value.svg.property.fill', this.updateSvgColor);
+        this.$watch('value.svg.property.svgBase64', this.updateBase64);
         this.$nextTick(() => {
-            this.updateSvg(this.value.svg.property.fill, '');
+            this.updateSvgColor(this.value.svg.property.fill, '');
         });
     },
     computed: {

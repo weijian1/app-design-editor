@@ -447,8 +447,8 @@ export default {
           e.srcEvent.stopPropagation();
           e.preventDefault();
           if (this.eventData.move) {
-            this.value.left = parseFloat((this.eventData.originElementPos.left + this.eventData.moveOffset.left).toFixed(2));
-            this.value.top = parseFloat((this.eventData.originElementPos.top + this.eventData.moveOffset.top).toFixed(2));
+            this.value.left = Math.ceil(this.eventData.originElementPos.left + this.eventData.moveOffset.left);
+            this.value.top = Math.ceil(this.eventData.originElementPos.top + this.eventData.moveOffset.top);
             this.$el.style.transform = `rotate(${this.value.rotate}deg)`;
             this.eventData.move = false;
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-body" :style="propertyCss | Obj2CSS" @click="unselectElemnt" tabindex="-1" @keydown="moveElementItem">
+  <div class="editor-body" :style="propertyCss | Obj2CSS" @click="unselectElemnt" tabindex="-1" @keydown="handleKeyDown">
       <template v-for="(element, index) in value.elements">
         <component :is="`element-${element.elementable_type}`" v-model="value.elements[index]" :ref="`component_${index}`" :index="index" @elementchange="onElementChange" :key="index"></component>
       </template>
@@ -68,7 +68,7 @@ export default {
                 elementIndex: index
             });
         },
-        moveElementItem(e) {
+        handleKeyDown(e) {
             let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
             if (elementIndex != null) {
                 let elementComponent =  this.$refs[`component_${elementIndex}`][0].$children[0];
@@ -87,8 +87,8 @@ export default {
                     }
                 }
 
-                if (e.keyCode == keyCodeUtil.KEYCODE_DELETE || 
-                    (e.keyCode == keyCodeUtil.KEYCODE_BACKSPACE && PlatformUtil.getPlatform() == PlatformUtil.OSX)) {
+                if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && e.keyCode == keyCodeUtil.KEYCODE_DELETE) || 
+                    (PlatformUtil.getPlatform() == PlatformUtil.OSX && e.keyCode == keyCodeUtil.KEYCODE_BACKSPACE)) {
                     let ret = this.editorParent.onDeleteElement();
                     if (ret.cancelable == false) {
                         this.editorParent.deleteElement(elementIndex);
@@ -100,13 +100,23 @@ export default {
                 }
             }
 
-            if (e.ctrlKey == true && e.keyCode == keyCodeUtil.KEYCODE_C) {
+            if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && 
+                 e.ctrlKey == true && 
+                 e.keyCode == keyCodeUtil.KEYCODE_C) || 
+                 (PlatformUtil.getPlatform() == PlatformUtil.OSX && 
+                 e.metaKey == true && 
+                 e.keyCode == keyCodeUtil.KEYCODE_C)) {
                 // 按下了ctrl + c
                 let ret = this.editorParent.onCopyElement();
                 if (ret.cancelable == false) {
                     this.copyElement();
                 }
-            } else if (e.ctrlKey == true && e.keyCode == keyCodeUtil.KEYCODE_V) {
+            } else if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && 
+                 e.ctrlKey == true && 
+                 e.keyCode == keyCodeUtil.KEYCODE_V) || 
+                 (PlatformUtil.getPlatform() == PlatformUtil.OSX && 
+                 e.metaKey == true && 
+                 e.keyCode == keyCodeUtil.KEYCODE_V)) {
                 // 按下了Ctrl + v
                 if (this.clipboardElement != null) {
                     let ret = this.editorParent.onPasteElement(this.clipboardElement);
