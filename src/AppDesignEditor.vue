@@ -1,5 +1,5 @@
 <template>
-    <div class="design-editor" :class="{'loading': loading}" @click="onEditorClick">
+    <div class="design-editor" :class="{'loading': loading}" @click="onEditorClick" v-cloak>
         <editor-wrapper v-model="value" :header="appHeader" :footer="appFooter"></editor-wrapper>
     </div>
 </template>
@@ -211,6 +211,9 @@ export default {
     }
     .loading {
         pointer-events: none;
+    }
+    [v-cloak] {
+        display: none;
     }
 </style>
 
