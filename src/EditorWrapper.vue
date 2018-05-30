@@ -204,20 +204,20 @@ export default {
             border: none;
             i {
                 display: block;
-                width: 16px;
-                height: 16px;
+                width: 18px;
+                height: 18px;
                 position: relative;
                 margin: 0 auto;
             }
             svg {
-                width: 16px;
-                height: 16px;
+                width: 18px;
+                height: 18px;
                 fill: white;
             }
             &:hover {
-                background: white;
+                background: black;
                 svg {
-                    fill: #4d4d4d;
+                    fill: white;
                 }
             }
         }

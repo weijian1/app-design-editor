@@ -154,7 +154,7 @@ export default {
               this.$emit('elementchange', true);
           }
       },
-      elementClick(e) {
+      elementClick(e) {          
           e.srcEvent.stopPropagation();
           if (this.elementType == 'text' && this.textIsEditing == true) {
 

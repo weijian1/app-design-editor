@@ -166,12 +166,12 @@ export default {
             this.clipboardElement = JSON.parse(JSON.stringify(elementData));
         },
         pasteElement() {
-            let elementData = this.clipboardElement;
+            let elementData = JSON.parse(JSON.stringify(this.clipboardElement));
             this.value.elements.push(elementData);
         },
         clearElementId(sourceElement) {
             for (let key in sourceElement) {
-                if (key == 'id') {
+                if (key == 'id' || key.indexOf('_id') != -1) {
                     sourceElement[key] = 0;
                 } else if (typeof sourceElement[key] == 'object') {
                     if (Array.isArray(sourceElement[key])) {
