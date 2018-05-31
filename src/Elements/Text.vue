@@ -120,5 +120,10 @@ export default {
         .note-editing-area .note-editable {
             user-select: text;
         }
+        .content-inner, .note-editor .note-editable {
+            p {
+                margin: 0;
+            }
+        }
     }
 </style>
