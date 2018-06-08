@@ -9,6 +9,7 @@
                 width: value.imagelist.property.image_base_setting.width,
                 height: value.imagelist.property.image_base_setting.height,
                 backgroundImage: item.url,
+                borderRadius: value.base_css.borderRadius,
             } | Obj2CSS"></div>
             <div class="text-wrapper" :style="{
                 lineHeight: value.base_css.lineHeight
