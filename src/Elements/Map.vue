@@ -126,7 +126,7 @@ export default {
 
 
 <style lang="scss" scoped>
-    #content-inner {
+    .content-inner {
         width: 100%;
         height: 100%;
         pointer-events: none;

@@ -156,15 +156,16 @@ export default {
 
 <style lang="scss" scoped>
     .editor-wrapper {
-        position: absolute;
+        position: relative;
         width: 401px;
         height: auto;
         left: 0;
         right: 0;
-        top: 8vh;
+        top: 0;
         margin: auto;
+        margin-top: 8vh;
+        margin-bottom: 75px;
         border: 1px dashed #c7c6c6;
-        margin-bottom: 100px;
         padding: 12px;
         padding-bottom: 0;
         background: white;
