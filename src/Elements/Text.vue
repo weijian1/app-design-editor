@@ -8,6 +8,7 @@
 <script>
 import ElementBorder from './../ElementBorder.vue'
 import MixinElement from './../Mixins/Element'
+import EditorMinxin from './../Mixins/Editor'
 import JQuery from 'jquery'
 import Bootstrap from 'bootstrap'
 import SummerNote from 'summernote'
@@ -15,7 +16,7 @@ import 'summernote/dist/lang/summernote-zh-CN'
 import 'summernote/dist/summernote.css'
 
 export default {
-    mixins: [ MixinElement ],
+    mixins: [ MixinElement, EditorMinxin ],
     data() {
         return {
             isEditing: false,
@@ -42,12 +43,15 @@ export default {
         showEditor(e) {
             e.preventDefault();
             let that = this;
+            let textEditorConfig = this.editorParent.textEditorConfig;
             $(this.$el).find('.content-inner').summernote({
                 airMode: true,
                 dialogsInBody: true,
                 lang: "zh-CN",
                 disableDragAndDrop: true,
                 focus: true,
+                fontNames: typeof textEditorConfig.fontNames != "undefined" ? textEditorConfig.fontNames : [],
+                fontSizes: typeof textEditorConfig.fontSizes != "undefined" ? textEditorConfig.fontSizes : [],
                 popover: {
                     disableDragAndDrop: true,
                     air: [
@@ -86,6 +90,8 @@ export default {
                                 height: `${textHeight}px`
                             });
                         }
+
+                        $(this).data('summernote').modules.airPopover.update();
                     },
                     onPaste: function(e) {
                         e.preventDefault();

@@ -18,16 +18,24 @@ export default {
     mixins: [ EditorMinxin ],
     props: {
         value: {
+            type: Object, 
             required: true
         },
         appHeader: {
+            type: Object, 
             required: true
         },
         appFooter: {
+            type: Object, 
             required: true
         },
         amapConfig: {
-            
+            type: Object, 
+            default: {}
+        },
+        textEditorConfig: {
+            type: Object, 
+            default: {}
         }
     },
     data() {
