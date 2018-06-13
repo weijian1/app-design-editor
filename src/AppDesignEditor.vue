@@ -68,7 +68,7 @@ export default {
         if (this.amapConfig && this.amapConfig.apiKey != '') {
             let scriptEl = document.createElement("script");
             scriptEl.id = 'amapsdk';
-            scriptEl.src = `http://webapi.amap.com/maps?v=1.4.6&key=${this.amapConfig.apiKey}&callback=onAmapSdkInit`;
+            scriptEl.src = window.location.protocol + `//webapi.amap.com/maps?v=1.4.6&key=${this.amapConfig.apiKey}&callback=onAmapSdkInit`;
             headEl.appendChild(scriptEl);
             this.totalLoadItem++;
 

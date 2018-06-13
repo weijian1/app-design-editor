@@ -60,7 +60,7 @@ export default {
             }
 
             let marker = new AMap.Marker({
-                icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                icon: window.location.protocol + "//webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
                 position: this.currentLngLat
             });
             marker.setMap(this.map);
@@ -111,7 +111,7 @@ export default {
                 console.log(el);
 
                 marker = new AMap.Marker({
-                    icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+                    icon: window.location.protocol + "//webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
                     position: [value.lng, value.lat]
                 });
                 marker.setMap(map);
