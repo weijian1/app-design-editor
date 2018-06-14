@@ -132,4 +132,9 @@ export default {
             }
         }
     }
+
+    .note-popover .dropdown-menu.dropdown-fontsize {
+        max-height: 250px;
+        overflow-y: scroll;
+    }
 </style>
