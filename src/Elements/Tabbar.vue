@@ -1,5 +1,5 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :listeners="borderListeners">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :listeners="borderListeners" v-cloak v-show="isLoadFinish">
       <div class="content-inner" v-if="value.tabbar.property">
           <div class="tabbar-item" v-for="(item, index) in value.tabbar.property.items" :key="index"
                :style="{
@@ -131,6 +131,9 @@ export default {
             margin: 0 auto;
             background-repeat: no-repeat;
             background-size: contain;
+        }
+        .tabbar-item-title.tabbar-type-3 {
+            transform: scale(.75);
         }
     }
 }

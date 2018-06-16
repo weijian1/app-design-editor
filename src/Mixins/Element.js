@@ -5,6 +5,7 @@ export default {
     data() {
         return {
             selected: false,
+            isLoadFinish: false,
             elementIndex: '',
             base_css: {
                 top: '',
@@ -48,6 +49,12 @@ export default {
 
         this.$children[0].$on('elementdbclick', () => {
             this.editorParent.onElementDblClick(this.elementIndex);
+        });
+
+        this.$nextTick((e) => {
+            setTimeout(() => {
+                this.isLoadFinish = true;
+            }, 10);
         });
     },
     methods: {

@@ -1,5 +1,5 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :textIsEditing="isEditing">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :textIsEditing="isEditing" v-cloak v-show="isLoadFinish">
     <div class="content-inner" @dblclick="showEditor" v-html="value.content"></div>
   </element-border>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" v-cloak v-show="isLoadFinish">
       <template v-if="value.input.property && value.input.property.inputable_type == 'inputText'">
           <input class="content-inner input-text" 
                  type="text"

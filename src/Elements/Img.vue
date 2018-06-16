@@ -1,5 +1,5 @@
 <template>
-  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :listeners="borderListeners">
+  <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :listeners="borderListeners" v-cloak v-show="isLoadFinish">
         <img class="content-inner" :src="value.img.property.src" />
         <span class="img-wrapper" :style="imgCss | Obj2CSS"></span>
   </element-border>

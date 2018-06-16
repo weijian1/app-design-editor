@@ -1,4 +1,5 @@
 import AppDesignEditor from './src/AppDesignEditor.vue'
+import './src/assets/scss/style.scss'
 import './src/assets/scss/icon.scss'
 import Vue from 'vue'
 

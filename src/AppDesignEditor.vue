@@ -220,8 +220,5 @@ export default {
     .loading {
         pointer-events: none;
     }
-    [v-cloak] {
-        display: none;
-    }
 </style>
 

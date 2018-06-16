@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-body" :style="propertyCss | Obj2CSS" @click="unselectElemnt" tabindex="-1" @keydown="handleKeyDown">
+  <div class="editor-body" :style="propertyCss | Obj2CSS" @click="unselectElemnt" tabindex="-1" @keydown="handleKeyDown" v-cloak>
       <template v-for="(element, index) in value.elements">
         <component :is="`element-${element.elementable_type}`" v-model="value.elements[index]" :ref="`component_${index}`" :index="index" @elementchange="onElementChange" :key="index"></component>
       </template>
