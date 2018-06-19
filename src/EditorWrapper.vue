@@ -129,6 +129,7 @@ export default {
             this.editorParent.editorData.currentAction.move = false;
         },
         clickSave() {
+            this.$el.querySelector('.save-btn').blur();
             this.editorParent.onSaveButtonClick();
         }
     },

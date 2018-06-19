@@ -54,7 +54,7 @@ export default {
         this.$nextTick((e) => {
             setTimeout(() => {
                 this.isLoadFinish = true;
-            }, 10);
+            }, 50);
         });
     },
     methods: {

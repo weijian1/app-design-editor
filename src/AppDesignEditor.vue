@@ -80,7 +80,7 @@ export default {
         let linkEl = document.createElement("link");
         linkEl.id = 'bootstrapCss';
         linkEl.rel = 'stylesheet';
-        linkEl.href = require('!file-loader?name=static/css/[name].[ext]!bootstrap/dist/css/bootstrap.min.css');;
+        linkEl.href = require('!file-loader?name=static/css/[name].[ext]!bootstrap/dist/css/bootstrap.min.css');
         linkEl.addEventListener('load', processLoaded, false);
         headEl.appendChild(linkEl);
 
