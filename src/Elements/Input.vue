@@ -100,6 +100,7 @@ export default {
                 paddingLeft: this.value.base_css.paddingLeft,
                 paddingBottom: this.value.base_css.paddingBottom,
                 paddingRight: this.value.base_css.paddingRight,
+                backgroundColor: this.value.base_css.backgroundColor
             };
         },
         placehoderCss: function() {
