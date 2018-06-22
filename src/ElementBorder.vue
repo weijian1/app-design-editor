@@ -71,7 +71,7 @@ export default {
   data() {
       return {
           mouseEnter: false,
-          specialCssProperty: ['opacity', 'paddingLeft', 'paddingTop', 'paddingRight', 'paddingBottom', 'color'],
+          specialCssProperty: ['opacity', 'paddingLeft', 'paddingTop', 'paddingRight', 'paddingBottom', 'color', 'backgroundColor'],
           eventCommonDefine: {
             n: {
                 axis: 'deltaY',
@@ -113,6 +113,18 @@ export default {
     // 记录元素起始位置
     recordStartPos() {
         let { top, left, width, height } = this.value;
+
+        // 当运行速度过慢时，top、left偶尔会变成NaN，假如是NaN，则从DOM里面获取数据，对数据进行修正
+        if (isNaN(top)) {
+          top = parseFloat(this.$el.style.top);
+          this.value.top = top;
+        }
+
+        if (isNaN(left)) {
+          left = parseFloat(this.$el.style.left);
+          this.value.left = left;
+        }
+
         this.eventData.originElementPos.top = top;
         this.eventData.originElementPos.left = left;
         this.eventData.originElementPos.width = width;

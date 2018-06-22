@@ -107,9 +107,11 @@ export default {
                  e.metaKey == true && 
                  e.keyCode == keyCodeUtil.KEYCODE_C)) {
                 // 按下了ctrl + c
-                let ret = this.editorParent.onCopyElement();
-                if (ret.cancelable == false) {
-                    this.copyElement();
+                if (elementIndex != null) {
+                    let ret = this.editorParent.onCopyElement();
+                    if (ret.cancelable == false) {
+                        this.copyElement();
+                    }
                 }
             } else if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && 
                  e.ctrlKey == true && 
