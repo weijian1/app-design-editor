@@ -123,7 +123,7 @@ export default {
                 if (this.clipboardElement != null) {
                     let ret = this.editorParent.onPasteElement(this.clipboardElement);
                     if (ret.cancelable == false) {
-                        this.pasteElement();
+                        this.pasteElement(ret.pasteElement);
                     }
                 }
             }
@@ -163,12 +163,10 @@ export default {
         copyElement() {
             let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
             let sourceElement = this.value.elements[elementIndex];
-
-            let elementData = this.clearElementId(sourceElement);
-            this.clipboardElement = JSON.parse(JSON.stringify(elementData));
+            this.clipboardElement = JSON.parse(JSON.stringify(sourceElement));
         },
-        pasteElement() {
-            let elementData = JSON.parse(JSON.stringify(this.clipboardElement));
+        pasteElement(element) {
+            let elementData = JSON.parse(JSON.stringify(element));
             this.value.elements.push(elementData);
         }
     },
