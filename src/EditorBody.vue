@@ -170,23 +170,6 @@ export default {
         pasteElement() {
             let elementData = JSON.parse(JSON.stringify(this.clipboardElement));
             this.value.elements.push(elementData);
-        },
-        clearElementId(sourceElement) {
-            for (let key in sourceElement) {
-                if (key == 'id' || key.indexOf('_id') != -1) {
-                    sourceElement[key] = 0;
-                } else if (typeof sourceElement[key] == 'object') {
-                    if (Array.isArray(sourceElement[key])) {
-                        for (let i = 0; i < sourceElement[key].length; i++) {
-                            this.clearElementId(sourceElement[key][i]);
-                        }
-                    } else {
-                        this.clearElementId(sourceElement[key]);
-                    }
-                }
-            }
-
-            return sourceElement;
         }
     },
     watch: {
