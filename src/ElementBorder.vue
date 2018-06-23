@@ -181,6 +181,7 @@ export default {
           this.mouseEnter = false;
       },
       startResize(e) {
+          document.getSelection().empty();
           e.srcEvent.stopPropagation();
           e.preventDefault();
 
@@ -324,6 +325,7 @@ export default {
           this.editorData.currentAction.resize = false;
       },
       startRotate(e) {
+          document.getSelection().empty();
           e.srcEvent.stopPropagation();
 
           if (this.listeners.rotate == true) {
@@ -385,6 +387,7 @@ export default {
         this.editorData.currentAction.rotate = false;
       },
       startMove(e) {
+          document.getSelection().empty();
           e.srcEvent.stopPropagation();
 
           if (this.listeners.move == true) {
