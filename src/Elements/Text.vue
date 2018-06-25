@@ -79,19 +79,18 @@ export default {
 
                         that.isEditing = true;
                     },
-                    onChange: function(text) {
+                    onKeydown: function() {
                         let textHeight = $(this).parent().find('.note-editor').height();
-                        let elHeight = $(this).parent().height();
-
-                        that.tempContent = text;
+                        let elHeight = that.value.base_css.height;
 
                         if (textHeight >= elHeight) {
-                            $(this).parents('.element-box').css({
-                                height: `${textHeight}px`
-                            });
+                            that.value.base_css.height = textHeight;
                         }
 
                         $(this).data('summernote').modules.airPopover.update();
+                    },
+                    onChange: function(text) {
+                        that.tempContent = text;
                     },
                     onPaste: function(e) {
                         e.preventDefault();
@@ -116,7 +115,7 @@ export default {
 
 <style lang="scss">
     .element-content, .note-editor, .note-editing-area, .note-editable {
-        height: 100%;
+        min-height: 100%;
         word-wrap: break-word;
     }
     .element-content {

@@ -387,14 +387,13 @@ export default {
         this.editorData.currentAction.rotate = false;
       },
       startMove(e) {
-          document.getSelection().empty();
           e.srcEvent.stopPropagation();
 
           if (this.listeners.move == true) {
             if (this.elementType == 'text' && this.textIsEditing == true) {
                 this.eventData.move = false;
             } else {
-
+                document.getSelection().empty();
                 let rectOriginEl = this.$el.getBoundingClientRect();
                 let rectEditorRect = this.bodyParent.$el.getBoundingClientRect();
 
