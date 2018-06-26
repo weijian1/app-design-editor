@@ -71,7 +71,7 @@ export default {
   data() {
       return {
           mouseEnter: false,
-          specialCssProperty: ['opacity', 'paddingLeft', 'paddingTop', 'paddingRight', 'paddingBottom', 'color', 'backgroundColor'],
+          specialCssProperty: ['opacity', 'paddingLeft', 'paddingTop', 'paddingRight', 'paddingBottom', 'color', 'backgroundColor', 'borderRadius'],
           eventCommonDefine: {
             n: {
                 axis: 'deltaY',
