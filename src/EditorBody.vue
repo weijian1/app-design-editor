@@ -69,28 +69,28 @@ export default {
                 }
             }
 
-            if (elementIndex.length == 1) {
-                for (let key in keyCodeUtil) {
-                    if (keyCodeUtil[key] == keyCodeUtil.KEYCODE_BACKSPACE) {
-                        if (PlatformUtil.getPlatform() == PlatformUtil.OSX) {
-                            e.preventDefault();
-                        }
-                    } else if (keyCodeUtil[key] == e.keyCode) {
+            for (let key in keyCodeUtil) {
+                if (keyCodeUtil[key] == keyCodeUtil.KEYCODE_BACKSPACE) {
+                    if (PlatformUtil.getPlatform() == PlatformUtil.OSX) {
                         e.preventDefault();
                     }
+                } else if (keyCodeUtil[key] == e.keyCode) {
+                    e.preventDefault();
                 }
+            }
 
-                if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && e.keyCode == keyCodeUtil.KEYCODE_DELETE) || 
-                    (PlatformUtil.getPlatform() == PlatformUtil.OSX && e.keyCode == keyCodeUtil.KEYCODE_BACKSPACE)) {
+            if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && e.keyCode == keyCodeUtil.KEYCODE_DELETE) || 
+                (PlatformUtil.getPlatform() == PlatformUtil.OSX && e.keyCode == keyCodeUtil.KEYCODE_BACKSPACE)) {
+                if (elementIndex.length == 1) {
                     let ret = this.editorParent.onDeleteElement();
                     if (ret.cancelable == false) {
                         this.editorParent.deleteElement(elementIndex);
                     }
-                } else if (e.keyCode == keyCodeUtil.KEYCODE_ESC) {
-                    this.editorParent.unselectElemnt();
-                } else if (e.keyCode >= 37 && e.keyCode <= 40) {
-                    this.processMoveItem(e.keyCode);
                 }
+            } else if (e.keyCode == keyCodeUtil.KEYCODE_ESC) {
+                this.editorParent.unselectElemnt();
+            } else if (e.keyCode >= 37 && e.keyCode <= 40) {
+                this.processMoveItem(e.keyCode);
             }
 
             if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && 
@@ -131,7 +131,7 @@ export default {
         },
         processMoveItem(direction) {
             let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
-            let elementComponent =  this.$refs[`component_${elementIndex}`][0].$children[0];
+            let elementComponent =  this.$refs[`component_${elementIndex[0]}`][0].$children[0];
             let e = {
                 preventDefault() {
 
@@ -191,6 +191,7 @@ export default {
                     this.$refs[`component_${updatedElementIndex[i]}`][0].select();
                     this.$refs[`component_${updatedElementIndex[i]}`][0].$children[0].notifySelect();
                 }
+                this.copyElement();
                 this.editorParent.$data.editorData.currentAction.multiSelect = false;
             });
 
