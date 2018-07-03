@@ -42,63 +42,65 @@ export default {
     methods: {
         showEditor(e) {
             e.preventDefault();
-            let that = this;
-            let textEditorConfig = this.editorParent.textEditorConfig;
-            $(this.$el).find('.content-inner').summernote({
-                airMode: true,
-                dialogsInBody: true,
-                lang: "zh-CN",
-                disableDragAndDrop: true,
-                focus: true,
-                fontNames: typeof textEditorConfig.fontNames != "undefined" ? textEditorConfig.fontNames : [],
-                fontSizes: typeof textEditorConfig.fontSizes != "undefined" ? textEditorConfig.fontSizes : [],
-                popover: {
+            if (this.editorParent.$data.editorData.select.elementIndex.length == 1) {
+                let that = this;
+                let textEditorConfig = this.editorParent.textEditorConfig;
+                $(this.$el).find('.content-inner').summernote({
+                    airMode: true,
+                    dialogsInBody: true,
+                    lang: "zh-CN",
                     disableDragAndDrop: true,
-                    air: [
-                        ['font', ['fontname', 'fontsize', 'color']],
-                        ['style', ['bold', 'italic', 'underline', 'clear']],
-                        ['para', ['paragraph', 'height']],
-                    ]
-                },
-                callbacks: {
-                    onInit: function() {
-                        let div = $(this).parent().find('.note-editable')[0];
-                        let range = document.createRange();
-                        let len = div.innerText.length;
-                        range.setStart(div, 0);
-                        range.setEnd(div, 1);
-                        getSelection().empty();
-                        getSelection().addRange(range);
+                    focus: true,
+                    fontNames: typeof textEditorConfig.fontNames != "undefined" ? textEditorConfig.fontNames : [],
+                    fontSizes: typeof textEditorConfig.fontSizes != "undefined" ? textEditorConfig.fontSizes : [],
+                    popover: {
+                        disableDragAndDrop: true,
+                        air: [
+                            ['font', ['fontname', 'fontsize', 'color']],
+                            ['style', ['bold', 'italic', 'underline', 'clear']],
+                            ['para', ['paragraph', 'height']],
+                        ]
+                    },
+                    callbacks: {
+                        onInit: function() {
+                            let div = $(this).parent().find('.note-editable')[0];
+                            let range = document.createRange();
+                            let len = div.innerText.length;
+                            range.setStart(div, 0);
+                            range.setEnd(div, 1);
+                            getSelection().empty();
+                            getSelection().addRange(range);
 
-                        div.addEventListener('dragstart', function(e) {
+                            div.addEventListener('dragstart', function(e) {
+                                e.preventDefault();
+                            });
+
+                            $(this).data('summernote').options.modules.airPopover.prototype.hide = function() {};
+                            $(this).data('summernote').modules.airPopover.update();
+
+                            that.isEditing = true;
+                        },
+                        onKeydown: function() {
+                            let textHeight = $(this).parent().find('.note-editor').height();
+                            let elHeight = that.value.base_css.height;
+
+                            if (textHeight >= elHeight) {
+                                that.value.base_css.height = textHeight;
+                            }
+
+                            $(this).data('summernote').modules.airPopover.update();
+                        },
+                        onChange: function(text) {
+                            that.tempContent = text;
+                        },
+                        onPaste: function(e) {
                             e.preventDefault();
-                        });
-
-                        $(this).data('summernote').options.modules.airPopover.prototype.hide = function() {};
-                        $(this).data('summernote').modules.airPopover.update();
-
-                        that.isEditing = true;
-                    },
-                    onKeydown: function() {
-                        let textHeight = $(this).parent().find('.note-editor').height();
-                        let elHeight = that.value.base_css.height;
-
-                        if (textHeight >= elHeight) {
-                            that.value.base_css.height = textHeight;
+                            let insertText = e.originalEvent.clipboardData.getData('text');
+                            document.execCommand('insertText', 0, insertText);
                         }
-
-                        $(this).data('summernote').modules.airPopover.update();
-                    },
-                    onChange: function(text) {
-                        that.tempContent = text;
-                    },
-                    onPaste: function(e) {
-                        e.preventDefault();
-                        let insertText = e.originalEvent.clipboardData.getData('text');
-                        document.execCommand('insertText', 0, insertText);
                     }
-                }
-            });
+                });
+            }
         },
         destroyEditor() {
             // 销毁summernote

@@ -394,8 +394,35 @@ export default {
                 this.eventData.move = false;
             } else {
                 document.getSelection().empty();
-                let rectOriginEl = this.$el.getBoundingClientRect();
+                let rectOriginEl = {
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    bottom: 0
+                };
                 let rectEditorRect = this.bodyParent.$el.getBoundingClientRect();
+
+                let arrElementIndex = this.editorParent.$data.editorData.select.elementIndex;
+                if (arrElementIndex.length == 0) {
+                    rectOriginEl = this.$el.getBoundingClientRect();
+                } else {
+                    for (let i = 0; i < arrElementIndex.length; i++) {
+                        let elementElRect = this.bodyParent.$refs[`component_${arrElementIndex[i]}`][0].$el.getBoundingClientRect();
+
+                        if (rectOriginEl.left == 0 || rectOriginEl.left > elementElRect.left) {
+                            rectOriginEl.left = elementElRect.left;
+                        }
+                        if (rectOriginEl.top == 0 || rectOriginEl.top > elementElRect.top) {
+                            rectOriginEl.top = elementElRect.top;
+                        }
+                        if (rectOriginEl.right == 0 || rectOriginEl.right < elementElRect.right) {
+                            rectOriginEl.right = elementElRect.right;
+                        }
+                        if (rectOriginEl.bottom == 0 || rectOriginEl.bottom < elementElRect.bottom) {
+                            rectOriginEl.bottom = elementElRect.bottom;
+                        }
+                    }
+                }
 
                 let maxOffset = {
                     left: rectOriginEl.left - rectEditorRect.left,
@@ -454,17 +481,28 @@ export default {
             }
 
             this.eventData.moveOffset = offset;
-            this.$el.style.transform = `translate3d(${offset.left}px, ${offset.top}px, 1px) rotate(${this.value.rotate}deg)`;
+
+            let arrElementIndex = this.editorParent.$data.editorData.select.elementIndex;
+            for (let i = 0; i < arrElementIndex.length; i++) {
+                let elementBorder = this.bodyParent.$refs[`component_${arrElementIndex[i]}`][0].$children[0];
+                elementBorder.$data.eventData.move = true;
+                elementBorder.$el.style.transform = `translate3d(${offset.left}px, ${offset.top}px, 1px) rotate(${elementBorder.value.rotate}deg)`;
+            }
         }
       },
       endMove(e) {
           e.srcEvent.stopPropagation();
           e.preventDefault();
           if (this.eventData.move) {
-            this.value.left = Math.ceil(this.eventData.originElementPos.left + this.eventData.moveOffset.left);
-            this.value.top = Math.ceil(this.eventData.originElementPos.top + this.eventData.moveOffset.top);
-            this.$el.style.transform = `rotate(${this.value.rotate}deg)`;
-            this.eventData.move = false;
+            let arrElementIndex = this.editorParent.$data.editorData.select.elementIndex;
+            for (let i = 0; i < arrElementIndex.length; i++) {
+                let elementBorder = this.bodyParent.$refs[`component_${arrElementIndex[i]}`][0].$children[0];
+
+                elementBorder.value.left = Math.ceil(elementBorder.value.left + this.eventData.moveOffset.left);
+                elementBorder.value.top = Math.ceil(elementBorder.value.top + this.eventData.moveOffset.top);
+                elementBorder.$el.style.transform = `rotate(${elementBorder.value.rotate}deg)`;
+                elementBorder.$data.eventData.move = false;
+            }
 
             this.editorData.currentAction.move = false;
           }

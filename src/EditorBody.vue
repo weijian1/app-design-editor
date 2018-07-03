@@ -1,7 +1,7 @@
 <template>
-  <div class="editor-body" :style="propertyCss | Obj2CSS" @click="unselectElemnt" tabindex="-1" @keydown="handleKeyDown" v-cloak>
+  <div class="editor-body" :style="propertyCss | Obj2CSS" @click="unselectElemnt" tabindex="-1" @keydown="handleKeyDown" @keyup="handleKeyUp" v-cloak>
       <template v-for="(element, index) in value.elements">
-        <component :is="`element-${element.elementable_type}`" v-model="value.elements[index]" :ref="`component_${index}`" :index="index" @elementchange="onElementChange" :key="index"></component>
+        <component :is="`element-${element.elementable_type}`" v-model="value.elements[index]" :ref="`component_${index}`" :index="index" :key="index"></component>
       </template>
   </div>
 </template>
@@ -59,24 +59,17 @@ export default {
                 this.editorParent.unselectElemnt();
             }
         },
-        onElementChange(index) {
-            if (this.selectElementIndex !== null && this.selectElementIndex >= 0) {
-                this.$refs[`component_${this.selectElementIndex}`][0].unselect();
-            }
-            this.selectElementIndex = index;
-            this.editor.$emit('elementchange', {
-                elementIndex: index
-            });
-        },
         handleKeyDown(e) {
             let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
-            if (elementIndex != null) {
-                let elementComponent =  this.$refs[`component_${elementIndex}`][0].$children[0];
+            for (let i = 0; i < elementIndex.length; i++) {
+                let elementComponent =  this.$refs[`component_${elementIndex[i]}`][0].$children[0];
 
                 if (elementComponent.elementType == 'text' && elementComponent.textIsEditing == true) {
                     return true;
                 }
+            }
 
+            if (elementIndex.length == 1) {
                 for (let key in keyCodeUtil) {
                     if (keyCodeUtil[key] == keyCodeUtil.KEYCODE_BACKSPACE) {
                         if (PlatformUtil.getPlatform() == PlatformUtil.OSX) {
@@ -126,7 +119,15 @@ export default {
                         this.pasteElement(ret.pasteElement);
                     }
                 }
+            } else if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && 
+                 e.ctrlKey == true) || 
+                 (PlatformUtil.getPlatform() == PlatformUtil.OSX && 
+                 e.metaKey == true) || e.shiftKey == true) {
+                     this.editorParent.$data.editorData.currentAction.multiSelect = true;
             }
+        },
+        handleKeyUp(e) {
+            this.editorParent.$data.editorData.currentAction.multiSelect = false;
         },
         processMoveItem(direction) {
             let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
@@ -162,12 +163,37 @@ export default {
         },
         copyElement() {
             let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
-            let sourceElement = this.value.elements[elementIndex];
-            this.clipboardElement = JSON.parse(JSON.stringify(sourceElement));
+
+            let arrChilpboard = [];
+            for (let i = 0; i < elementIndex.length; i++) {
+                arrChilpboard.push(JSON.parse(JSON.stringify(this.value.elements[elementIndex[i]])));
+            }
+
+            this.clipboardElement = arrChilpboard;
         },
         pasteElement(element) {
-            let elementData = JSON.parse(JSON.stringify(element));
-            this.value.elements.push(elementData);
+            this.editorParent.unselectElemnt();
+            let arrElementData = JSON.parse(JSON.stringify(element));
+            for (let i = 0; i < arrElementData.length; i++) {
+                arrElementData[i].base_css.top += 5;
+                arrElementData[i].base_css.left += 5;
+                this.value.elements.push(arrElementData[i]);
+            }
+
+            let updatedElementIndex = [];
+            for (let i = this.value.elements.length - 1; i >= this.value.elements.length - arrElementData.length; i--) {
+                updatedElementIndex.push(i);
+            }
+
+            this.$nextTick(() => {
+                this.editorParent.$data.editorData.currentAction.multiSelect = true;
+                for (let i = 0; i < updatedElementIndex.length; i++) {
+                    this.$refs[`component_${updatedElementIndex[i]}`][0].select();
+                    this.$refs[`component_${updatedElementIndex[i]}`][0].$children[0].notifySelect();
+                }
+                this.editorParent.$data.editorData.currentAction.multiSelect = false;
+            });
+
         }
     },
     watch: {

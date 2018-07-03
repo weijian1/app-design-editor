@@ -42,12 +42,13 @@ export default {
         return {
             editorData: {
                 select: {
-                    elementIndex: null
+                    elementIndex: []
                 },
                 currentAction: {
                     resize: false,
                     rotate: false,
-                    move: false
+                    move: false,
+                    multiSelect: false,
                 }
             },
             loading: true,
@@ -106,26 +107,31 @@ export default {
         },
         unselectElemnt() {
             let selectElementIndex = this.editorData.select.elementIndex;
-            if (selectElementIndex !== null) {
-                this.bodyChildren.$refs[`component_${selectElementIndex}`][0].unselect();
 
-                let element = this.value.elements[selectElementIndex];
+            for (let i = 0; i < selectElementIndex.length; i++) {
+                this.bodyChildren.$refs[`component_${selectElementIndex[i]}`][0].unselect();
+
+                let element = this.value.elements[selectElementIndex[i]];
                 if (element.elementable_type == 'text') {
-                    this.bodyChildren.$refs[`component_${selectElementIndex}`][0].destroyEditor();
+                    this.bodyChildren.$refs[`component_${selectElementIndex[i]}`][0].destroyEditor();
                 }
-
-                this.elementChange(null);
-                this.$emit('elementchange', this.editorData.select);
             }
+
+            this.editorData.select.elementIndex = [];
+            this.$emit('elementchange', this.editorData.select);
         },
         elementChange(elementIndex) {
-            this.editorData.select.elementIndex = elementIndex;
+            this.editorData.select.elementIndex.push(elementIndex);
         },
 
         // emit
         onElementChange(elementIndex) {
-            if (this.editorData.select.elementIndex !== null) {
-                this.bodyChildren.$refs[`component_${this.editorData.select.elementIndex}`][0].unselect();
+            if (this.editorData.currentAction.multiSelect == false) {
+                for (let i = 0; i < this.editorData.select.elementIndex.length; i++) {
+                    this.bodyChildren.$refs[`component_${this.editorData.select.elementIndex[i]}`][0].unselect();
+                }
+
+                this.editorData.select.elementIndex = [];
             }
 
             this.elementChange(elementIndex);
@@ -165,8 +171,10 @@ export default {
 
         // api
         createElement(options) {
-            if (this.editorData.select.elementIndex !== null) {
-                this.bodyChildren.$refs[`component_${this.editorData.select.elementIndex}`][0].unselect();
+            if (this.editorData.select.elementIndex.length > 0) {
+                for (let i = 0; i < this.editorData.select.elementIndex.length; i++) {
+                    this.bodyChildren.$refs[`component_${this.editorData.select.elementIndex[i]}`][0].unselect();
+                }
             }
 
             // 不允许添加多个tabbar
@@ -200,6 +208,16 @@ export default {
             if (e.pageX <= wrapperRect.left || e.pageX >= wrapperRect.right || e.pageY <= wrapperRect.top || e.pageY >= wrapperRect.bottom) {
                 if (e.target == this.$el) {
                     this.unselectElemnt();
+                }
+            }
+        },
+        checkElementInfo() {
+            for (let i = 0; i < this.value.elements.length; i++) {
+                if (isNaN(this.value.elements[i].base_css.top)) {
+                    this.value.elements[i].base_css.top = this.bodyChildren.$refs[`component_${i}`][0].$el.style.top;
+                }
+                if (isNaN(this.value.elements[i].base_css.left)) {
+                    this.value.elements[i].base_css.left = this.bodyChildren.$refs[`component_${i}`][0].$el.style.left;
                 }
             }
         }
