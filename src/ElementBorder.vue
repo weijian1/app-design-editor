@@ -409,7 +409,8 @@ export default {
                 let rectEditorRect = this.bodyParent.$el.getBoundingClientRect();
 
                 let arrElementIndex = this.editorParent.$data.editorData.select.elementIndex;
-                if (arrElementIndex.length == 0) {
+
+                if (arrElementIndex.length <= 1) {
                     rectOriginEl = this.$el.getBoundingClientRect();
                 } else {
                     for (let i = 0; i < arrElementIndex.length; i++) {
@@ -457,6 +458,10 @@ export default {
 
             let originEl = this.eventData.originElementPos;
             let maxOffset = this.eventData.eventMaxOffset;
+
+            // console.log('===test===');
+            // console.log(originEl);
+            // console.log(maxOffset);
 
             if (e.deltaX < 0) {
                 if (-e.deltaX >= maxOffset.left) {

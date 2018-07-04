@@ -395,6 +395,9 @@ export default {
             for (let i = 0; i < arrElementData.length; i++) {
                 arrElementData[i].base_css.top += 5;
                 arrElementData[i].base_css.left += 5;
+                let rightZIndex = this.editorData.layout.zIndex;
+                rightZIndex++;
+                arrElementData[i].base_css.zIndex = rightZIndex;
                 this.createElement(arrElementData[i]);
             }
 
