@@ -9,12 +9,12 @@
                 <li :class="canPaste == false ? 'disabled' : ''"><a href="#" @click="clickPasteElement">粘贴</a></li>
                 <li><a href="#" @click="clickDeleteElement">删除</a></li>
             </ul>
-            <!-- <ul>
-                <li><a href="#">上移一层</a></li>
-                <li><a href="#">下移一层</a></li>
-                <li><a href="#">置于顶层</a></li>
-                <li><a href="#">置于底层</a></li>
-            </ul> -->
+            <ul>
+                <li><a href="#" @click="clickMoveTop1Layer">上移一层</a></li>
+                <li><a href="#" @click="clickMoveBottom1Layer">下移一层</a></li>
+                <li><a href="#" @click="clickMoveTop">置于顶层</a></li>
+                <li><a href="#" @click="clickMoveBottom">置于底层</a></li>
+            </ul>
         </template>
         <template v-else>
             <ul>
@@ -78,6 +78,18 @@
             },
             clickDeleteElement() {
                 this.$emit('deleteelement');
+            },
+            clickMoveTop1Layer() {
+                this.$emit('movetop1layer');
+            },
+            clickMoveBottom1Layer() {
+                this.$emit('movebottom1layer');
+            },
+            clickMoveTop() {
+                this.$emit('movetop');
+            },
+            clickMoveBottom() {
+                this.$emit('movebottom');
             }
         }
     }

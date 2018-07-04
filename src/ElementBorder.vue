@@ -167,12 +167,17 @@ export default {
               this.$emit('elementchange', true);
           }
       },
-      elementClick(e) {          
+      elementClick(e, type = 'click') {          
           e.srcEvent.stopPropagation();
           if (this.elementType == 'text' && this.textIsEditing == true) {
 
           } else {
               this.notifySelect();
+          }
+
+          if (type != 'contextmenu' && this.editorParent.$data.editorData.contextMenu.isShow) {
+            this.editorParent.$data.editorData.contextMenu.isShow = false;
+            this.editorParent.$data.editorData.contextMenu.elementIndex = [];
           }
       },
       elementEnter() {
@@ -522,7 +527,7 @@ export default {
 
                   }
               }
-          });
+          }, 'contextmenu');
       }
   },
   computed: {

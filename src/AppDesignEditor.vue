@@ -8,7 +8,11 @@
                       @editelement="onEditorElementEdit"
                       @copyelement="onEditorElementCopy"
                       @pasteelement="onEditorElementPaste"
-                      @deleteelement="onEditorElementDelete"></context-menu>
+                      @deleteelement="onEditorElementDelete"
+                      @movetop1layer="onEditorMoveTop1Layer"
+                      @movebottom1layer="onEditorMoveBottom1Layer"
+                      @movetop="onEditorMoveTop"
+                      @movebottom="onEditorMoveBottom"></context-menu>
     </div>
 </template>
 
@@ -68,6 +72,9 @@ export default {
                         top: 0
                     },
                     elementIndex: []
+                },
+                layout: {
+                    zIndex: 1
                 }
             },
             loading: true,
@@ -105,6 +112,27 @@ export default {
         headEl.appendChild(linkEl);
 
         this.totalLoadItem++;
+    },
+    mounted() {
+        this.$nextTick(() => {
+            this.value.elements.sort((a, b) => {
+                if (a.base_css.zIndex > b.base_css.zIndex) {
+                    return -1;
+                } else if (a.base_css.zIndex < b.base_css.zIndex) {
+                    return 1;
+                }
+                return 0;
+            });
+            let maxZIndexFilter = this.value.elements.filter((item) => {
+                if (item.base_css.zIndex < 2000) {
+                    return item;
+                }
+            });
+
+            if (maxZIndexFilter.length > 0) {
+                this.editorData.layout.zIndex = maxZIndexFilter[0].base_css.zIndex;
+            }
+        });
     },
     beforeDestroy() {
         // 当编辑器被移除前，需要将原先加载进来的资源文件删除
@@ -218,6 +246,69 @@ export default {
             }
             this.editorData.contextMenu.isShow = false;
         },
+        onEditorMoveTop1Layer() {
+            this.process1Layer('top1layer');
+        },
+        onEditorMoveBottom1Layer() {
+            this.process1Layer('bottom1layer');
+        },
+        onEditorMoveTop() {
+            let arrElementIndex = this.editorData.select.elementIndex;
+            if (arrElementIndex.length == 1) {
+                let currentZIndex = this.value.elements[arrElementIndex[0]].base_css.zIndex;
+                let elementFilter = this.value.elements.filter((item) => {
+                    return item.base_css.zIndex > currentZIndex;
+                });
+
+                for (let i = 0; i < elementFilter.length; i++) {
+                    elementFilter[i].base_css.zIndex--;
+                }
+
+                this.value.elements[arrElementIndex[0]].base_css.zIndex = this.editorData.layout.zIndex - 1;
+            }
+
+            this.editorData.contextMenu.isShow = false;
+        },
+        onEditorMoveBottom() {
+            let arrElementIndex = this.editorData.select.elementIndex;
+            if (arrElementIndex.length == 1) {
+                let elementFilter = this.value.elements.filter((item) => {
+                    return item.base_css.zIndex >= 1;
+                });
+
+                for (let i = 0; i < elementFilter.length; i++) {
+                    elementFilter[i].base_css.zIndex++;
+                }
+
+                this.value.elements[arrElementIndex[0]].base_css.zIndex = 1;
+            }
+
+            this.editorData.contextMenu.isShow = false;
+        },
+
+        process1Layer(type) {
+            let arrElementIndex = this.editorData.select.elementIndex;
+            if (arrElementIndex.length == 1) {
+                let currentZIndex = this.value.elements[arrElementIndex[0]].base_css.zIndex;
+                let compareZIndex = currentZIndex;
+                if (type == 'top1layer') {
+                    compareZIndex++;
+                } else if (type == 'bottom1layer') {
+                    compareZIndex--;
+                }
+
+                let elementFilter = this.value.elements.filter((item) => {
+                    return item.base_css.zIndex == compareZIndex;
+                });
+
+                if (elementFilter.length == 1) {
+                    elementFilter[0].base_css.zIndex = currentZIndex;
+                    this.value.elements[arrElementIndex[0]].base_css.zIndex = compareZIndex;
+                }
+            }
+
+            this.editorData.contextMenu.isShow = false;
+        },
 
         // api
         createElement(options) {
@@ -244,6 +335,8 @@ export default {
                 this.elementChange(lastElementIndex);
                 this.$emit('elementchange', this.editorData.select);
             });
+
+            this.editorData.layout.zIndex++;
 
             return true;
         },
@@ -302,7 +395,7 @@ export default {
             for (let i = 0; i < arrElementData.length; i++) {
                 arrElementData[i].base_css.top += 5;
                 arrElementData[i].base_css.left += 5;
-                this.value.elements.push(arrElementData[i]);
+                this.createElement(arrElementData[i]);
             }
 
             let updatedElementIndex = [];
@@ -311,6 +404,7 @@ export default {
             }
 
             this.$nextTick(() => {
+                this.unselectElemnt();
                 this.editorData.currentAction.multiSelect = true;
                 let comEditorBody = this.$el.querySelector(".editor-body").__vue__;
                 for (let i = 0; i < updatedElementIndex.length; i++) {
@@ -320,6 +414,9 @@ export default {
                 this.copyElement();
                 this.editorData.currentAction.multiSelect = false;
             });
+        },
+        getZIndex() {
+            return this.editorData.layout.zIndex;
         }
     }
 }
