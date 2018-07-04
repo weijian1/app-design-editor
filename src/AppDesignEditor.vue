@@ -2,6 +2,7 @@
     <div class="design-editor" :class="{'loading': loading}" @click="onEditorClick" @contextmenu="handleContextMenu" v-cloak>
         <editor-wrapper v-model="value" :header="appHeader" :footer="appFooter"></editor-wrapper>
         <context-menu v-if="editorData.contextMenu.isShow" 
+                      :isShow="editorData.contextMenu.isShow"
                       :showPosition="editorData.contextMenu.position"
                       :selectElementIndex="editorData.contextMenu.elementIndex"
                       @editelement="onEditorElementEdit"

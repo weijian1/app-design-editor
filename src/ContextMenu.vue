@@ -6,7 +6,7 @@
             </ul>
             <ul>
                 <li><a href="#" @click="clickCopyElement">复制</a></li>
-                <li><a href="#" @click="clickPasteElement">粘贴</a></li>
+                <li :class="canPaste == false ? 'disabled' : ''"><a href="#" @click="clickPasteElement">粘贴</a></li>
                 <li><a href="#" @click="clickDeleteElement">删除</a></li>
             </ul>
             <!-- <ul>
@@ -18,7 +18,7 @@
         </template>
         <template v-else>
             <ul>
-                <li><a href="#" @click="clickPasteElement">粘贴</a></li>
+                <li :class="canPaste == false ? 'disabled' : ''"><a href="#" @click="clickPasteElement">粘贴</a></li>
             </ul>
         </template>
     </div>
@@ -42,6 +42,11 @@
                 default: []
             }
         },
+        data() {
+            return {
+                canPaste: false
+            }
+        },
         watch: {
             showPosition(newVal, oldVal) {
                 this.showPosition = newVal;
@@ -49,6 +54,17 @@
             selectElementIndex(newVal, oldVal) {
                 this.selectElementIndex = newVal;
             }
+        },
+        mounted() {
+            this.$parent.$watch('editorData.clipboardElement', (newVal, oldVal) => {
+                if (newVal.length > 0) {
+                    this.canPaste = true;
+                } else {
+                    this.canPaste = false;
+                }
+            });
+
+            this.canPaste = this.$parent.$data.editorData.clipboardElement.length > 0 ? true : false;
         },
         methods: {
             clickEditElement() {
@@ -75,17 +91,22 @@
     border: solid 1px #f2f2f2;
     ul {
         list-style-type: none;
-        padding-left: 18px;
         width: 117px;
         font-size: 14px;
         margin: 0;
         border-bottom: solid 1px #f2f2f2;
         color: #4c4c4c;
+        padding-left: 0;
         li {
             line-height: 34px;
         }
+        li.disabled a {
+            pointer-events: none;
+            color: #808080;
+        }
         a {
             display: block;
+            padding-left: 18px;
             color: #4c4c4c;
             text-decoration: none;
         }
