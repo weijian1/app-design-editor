@@ -42,7 +42,6 @@ export default {
     data() {
         return {
             selectElementIndex: null,
-            clipboardElement: null
         };
     },
     props: {
@@ -100,10 +99,10 @@ export default {
                  e.metaKey == true && 
                  e.keyCode == keyCodeUtil.KEYCODE_C)) {
                 // 按下了ctrl + c
-                if (elementIndex != null) {
+                if (elementIndex.length > 0) {
                     let ret = this.editorParent.onCopyElement();
                     if (ret.cancelable == false) {
-                        this.copyElement();
+                        this.editorParent.copyElement();
                     }
                 }
             } else if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && 
@@ -113,10 +112,10 @@ export default {
                  e.metaKey == true && 
                  e.keyCode == keyCodeUtil.KEYCODE_V)) {
                 // 按下了Ctrl + v
-                if (this.clipboardElement != null) {
-                    let ret = this.editorParent.onPasteElement(this.clipboardElement);
+                if (this.editorParent.$data.editorData.clipboardElement.length > 0) {
+                    let ret = this.editorParent.onPasteElement();
                     if (ret.cancelable == false) {
-                        this.pasteElement(ret.pasteElement);
+                        this.editorParent.pasteElement(ret.pasteElement);
                     }
                 }
             } else if ((PlatformUtil.getPlatform() != PlatformUtil.OSX && 
@@ -160,41 +159,6 @@ export default {
             elementComponent.startMove(e);
             elementComponent.moving(e);
             elementComponent.endMove(e);
-        },
-        copyElement() {
-            let elementIndex = this.editorParent.$data.editorData.select.elementIndex;
-
-            let arrChilpboard = [];
-            for (let i = 0; i < elementIndex.length; i++) {
-                arrChilpboard.push(JSON.parse(JSON.stringify(this.value.elements[elementIndex[i]])));
-            }
-
-            this.clipboardElement = arrChilpboard;
-        },
-        pasteElement(element) {
-            this.editorParent.unselectElemnt();
-            let arrElementData = JSON.parse(JSON.stringify(element));
-            for (let i = 0; i < arrElementData.length; i++) {
-                arrElementData[i].base_css.top += 5;
-                arrElementData[i].base_css.left += 5;
-                this.value.elements.push(arrElementData[i]);
-            }
-
-            let updatedElementIndex = [];
-            for (let i = this.value.elements.length - 1; i >= this.value.elements.length - arrElementData.length; i--) {
-                updatedElementIndex.push(i);
-            }
-
-            this.$nextTick(() => {
-                this.editorParent.$data.editorData.currentAction.multiSelect = true;
-                for (let i = 0; i < updatedElementIndex.length; i++) {
-                    this.$refs[`component_${updatedElementIndex[i]}`][0].select();
-                    this.$refs[`component_${updatedElementIndex[i]}`][0].$children[0].notifySelect();
-                }
-                this.copyElement();
-                this.editorParent.$data.editorData.currentAction.multiSelect = false;
-            });
-
         }
     },
     watch: {

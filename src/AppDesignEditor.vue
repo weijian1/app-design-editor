@@ -1,19 +1,28 @@
 <template>
-    <div class="design-editor" :class="{'loading': loading}" @click="onEditorClick" v-cloak>
+    <div class="design-editor" :class="{'loading': loading}" @click="onEditorClick" @contextmenu="handleContextMenu" v-cloak>
         <editor-wrapper v-model="value" :header="appHeader" :footer="appFooter"></editor-wrapper>
+        <context-menu v-if="editorData.contextMenu.isShow" 
+                      :showPosition="editorData.contextMenu.position"
+                      :selectElementIndex="editorData.contextMenu.elementIndex"
+                      @editelement="onEditorElementEdit"
+                      @copyelement="onEditorElementCopy"
+                      @pasteelement="onEditorElementPaste"
+                      @deleteelement="onEditorElementDelete"></context-menu>
     </div>
 </template>
 
 
 <script>
 import EditorWrapper from './EditorWrapper.vue'
+import ContextMenu from './ContextMenu.vue'
 import EditorMinxin  from './Mixins/Editor'
 import EditorEvent from './Utils/EditorEvent'
 
 export default {
     name: 'app-design-editor',
     components: {
-        EditorWrapper
+        EditorWrapper,
+        ContextMenu
     },
     mixins: [ EditorMinxin ],
     props: {
@@ -41,6 +50,7 @@ export default {
     data() {
         return {
             editorData: {
+                clipboardElement: [],
                 select: {
                     elementIndex: []
                 },
@@ -49,6 +59,14 @@ export default {
                     rotate: false,
                     move: false,
                     multiSelect: false,
+                },
+                contextMenu: {
+                    isShow: 0,
+                    position: {
+                        left: 0,
+                        top: 0
+                    },
+                    elementIndex: []
                 }
             },
             loading: true,
@@ -118,20 +136,19 @@ export default {
             }
 
             this.editorData.select.elementIndex = [];
+            this.editorData.contextMenu.isShow = false;
+            this.editorData.contextMenu.elementIndex = [];
             this.$emit('elementchange', this.editorData.select);
         },
         elementChange(elementIndex) {
             this.editorData.select.elementIndex.push(elementIndex);
+            this.editorData.contextMenu.elementIndex.push(elementIndex);
         },
 
         // emit
         onElementChange(elementIndex) {
             if (this.editorData.currentAction.multiSelect == false) {
-                for (let i = 0; i < this.editorData.select.elementIndex.length; i++) {
-                    this.bodyChildren.$refs[`component_${this.editorData.select.elementIndex[i]}`][0].unselect();
-                }
-
-                this.editorData.select.elementIndex = [];
+                this.unselectElemnt();
             }
 
             this.elementChange(elementIndex);
@@ -160,13 +177,45 @@ export default {
             this.$emit('elementcopy', editorEvent);
             return editorEvent;
         },
-        onPasteElement(clipboardElement) {
+        onPasteElement() {
             let editorEvent = new EditorEvent('pasteelement');
             editorEvent.setElementIndex(null);
-            editorEvent.pasteElement = clipboardElement;
+            editorEvent.pasteElement = this.editorData.clipboardElement;
 
             this.$emit('elementpaste', editorEvent);
             return editorEvent;
+        },
+        onEditorElementEdit() {
+            this.editorData.contextMenu.isShow = false;
+            this.onElementDblClick();
+        },
+        onEditorElementCopy() {
+            let arrElementIndex = this.editorData.select.elementIndex;
+            if (arrElementIndex.length > 0) {
+                let ret = this.onCopyElement();
+                if (ret.cancelable == false) {
+                    this.copyElement();
+                }
+            }
+            this.editorData.contextMenu.isShow = false;
+        },
+        onEditorElementPaste() {
+            if (this.editorData.clipboardElement.length > 0) {
+                let ret = this.onPasteElement();
+                if (ret.cancelable == false) {
+                    this.pasteElement(ret.pasteElement);
+                }
+            }
+        },
+        onEditorElementDelete() {
+            let arrElementIndex = this.editorData.select.elementIndex;
+            if (arrElementIndex.length == 1) {
+                let ret = this.onDeleteElement();
+                if (ret.cancelable == false) {
+                    this.deleteElement(arrElementIndex[0]);
+                }
+            }
+            this.editorData.contextMenu.isShow = false;
         },
 
         // api
@@ -201,6 +250,17 @@ export default {
             this.unselectElemnt();
             this.value.elements.splice(elementIndex, 1);
         },
+        checkElementInfo() {
+            for (let i = 0; i < this.value.elements.length; i++) {
+                if (isNaN(this.value.elements[i].base_css.top)) {
+                    this.value.elements[i].base_css.top = this.bodyChildren.$refs[`component_${i}`][0].$el.style.top;
+                }
+                if (isNaN(this.value.elements[i].base_css.left)) {
+                    this.value.elements[i].base_css.left = this.bodyChildren.$refs[`component_${i}`][0].$el.style.left;
+                }
+            }
+        },
+
         onEditorClick(e) {
             // 根据坐标判断是否点击外部元素
             let wrapperRect = this.wrapperChildren.$el.getBoundingClientRect();
@@ -211,15 +271,54 @@ export default {
                 }
             }
         },
-        checkElementInfo() {
-            for (let i = 0; i < this.value.elements.length; i++) {
-                if (isNaN(this.value.elements[i].base_css.top)) {
-                    this.value.elements[i].base_css.top = this.bodyChildren.$refs[`component_${i}`][0].$el.style.top;
-                }
-                if (isNaN(this.value.elements[i].base_css.left)) {
-                    this.value.elements[i].base_css.left = this.bodyChildren.$refs[`component_${i}`][0].$el.style.left;
-                }
+        handleContextMenu(e) {
+            let elRect = this.$el.getBoundingClientRect();
+            let offsetX = e.pageX - elRect.left;
+            let offsetY = e.pageY - elRect.top;
+
+            e.preventDefault();
+            if (e.target.classList.contains('editor-body') || e.target.classList.contains('design-editor')) {
+                this.unselectElemnt();
             }
+
+            this.editorData.contextMenu.isShow = true;
+            this.editorData.contextMenu.position.left = offsetX;
+            this.editorData.contextMenu.position.top = offsetY;
+        },
+        copyElement() {
+            let elementIndex = this.editorData.select.elementIndex;
+
+            let arrChilpboard = [];
+            for (let i = 0; i < elementIndex.length; i++) {
+                arrChilpboard.push(JSON.parse(JSON.stringify(this.value.elements[elementIndex[i]])));
+            }
+
+            this.editorData.clipboardElement = arrChilpboard;
+        },
+        pasteElement(element) {
+            this.unselectElemnt();
+            let arrElementData = JSON.parse(JSON.stringify(element));
+            for (let i = 0; i < arrElementData.length; i++) {
+                arrElementData[i].base_css.top += 5;
+                arrElementData[i].base_css.left += 5;
+                this.value.elements.push(arrElementData[i]);
+            }
+
+            let updatedElementIndex = [];
+            for (let i = this.value.elements.length - 1; i >= this.value.elements.length - arrElementData.length; i--) {
+                updatedElementIndex.push(i);
+            }
+
+            this.$nextTick(() => {
+                this.editorData.currentAction.multiSelect = true;
+                let comEditorBody = this.$el.querySelector(".editor-body").__vue__;
+                for (let i = 0; i < updatedElementIndex.length; i++) {
+                    comEditorBody.$refs[`component_${updatedElementIndex[i]}`][0].select();
+                    comEditorBody.$refs[`component_${updatedElementIndex[i]}`][0].$children[0].notifySelect();
+                }
+                this.copyElement();
+                this.editorData.currentAction.multiSelect = false;
+            });
         }
     }
 }

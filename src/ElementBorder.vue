@@ -5,6 +5,7 @@
        @mouseenter="elementEnter"
        @mouseleave="elementLeave"
        @dblclick="elementDblClick"
+       @contextmenu="elementContextMenu"
        :style="value | Obj2CSS('exclude', specialCssProperty)">
     <div class="element-content" 
          v-panstart="startMove"
@@ -506,6 +507,22 @@ export default {
 
             this.editorData.currentAction.move = false;
           }
+      },
+      elementContextMenu(e) {
+          // 插入selectElement
+          this.editorParent.$data.editorData.contextMenu.elementIndex = JSON.parse(JSON.stringify(this.editorParent.$data.editorData.select.elementIndex));
+
+          if (this.elementType == 'text' && this.textIsEditing == true) {
+              e.stopPropagation();
+          }
+          
+          this.elementClick({
+              srcEvent: {
+                  stopPropagation() {
+
+                  }
+              }
+          });
       }
   },
   computed: {
