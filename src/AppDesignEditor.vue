@@ -368,7 +368,7 @@ export default {
         handleContextMenu(e) {
             let elRect = this.$el.getBoundingClientRect();
             let offsetX = e.pageX - elRect.left;
-            let offsetY = e.pageY - elRect.top;
+            let offsetY = e.pageY - elRect.top + this.$el.scrollTop;
 
             e.preventDefault();
             if (e.target.classList.contains('editor-body') || e.target.classList.contains('design-editor')) {
