@@ -18,6 +18,7 @@ import ElementImagelist from './Elements/Imagelist.vue'
 import ElementTabbar from './Elements/Tabbar.vue'
 import ElementInput from './Elements/Input.vue'
 import ElementButton from './Elements/Button.vue'
+import ElementMultiLayerProduct from './Elements/MultiLayerProduct.vue'
 import EditorMinxin  from './Mixins/Editor'
 import Obj2CSS from './Filters/Obj2CSS'
 import keyCodeUtil from './Utils/KeyCode'
@@ -37,7 +38,8 @@ export default {
         ElementImagelist,
         ElementTabbar,
         ElementInput,
-        ElementButton
+        ElementButton,
+        ElementMultiLayerProduct
     },
     data() {
         return {

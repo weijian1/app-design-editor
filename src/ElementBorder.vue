@@ -459,10 +459,6 @@ export default {
             let originEl = this.eventData.originElementPos;
             let maxOffset = this.eventData.eventMaxOffset;
 
-            // console.log('===test===');
-            // console.log(originEl);
-            // console.log(maxOffset);
-
             if (e.deltaX < 0) {
                 if (-e.deltaX >= maxOffset.left) {
                     offset.left = -maxOffset.left;
