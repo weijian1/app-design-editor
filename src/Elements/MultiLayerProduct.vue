@@ -12,10 +12,14 @@
                           :class="value.multi_layer_product.property.currentIndex == index ? 'selected' : ''">{{layer.title}}</span>
                 </div>
                 <div class="toolbar-item">
-                    <div v-for="(pic, index) in layers[value.multi_layer_product.property.currentIndex].item_pics" 
-                         :key="index" :style="{ width: value.multi_layer_product.property.imageWidth + 'px', 
-                                                height: value.multi_layer_product.property.imageHeight + 'px',
-                                                backgroundImage: `url(${pic.url})` }"></div>
+                    <div class="item-wrapper" :class="value.multi_layer_product.property.layers[value.multi_layer_product.property.currentIndex].currentIndex == index ? 'selected' : ''" 
+                                              v-for="(pic, index) in layers[value.multi_layer_product.property.currentIndex].item_pics" :key="index">
+                        <div :style="{ width: value.multi_layer_product.property.imageWidth + 'px', 
+                            height: value.multi_layer_product.property.imageHeight + 'px',
+                            backgroundImage: `url(${pic.url})` }"
+                            class="item-img"></div>
+                            <div class='item-title' :style="{ width: value.multi_layer_product.property.imageWidth + 'px'}">{{pic.title}}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,7 +90,7 @@ export default {
             span {
                 display: inline-block;
                 padding:  7px 14px;
-                background: rgba(0, 0, 0, .7);
+                background: rgba(0, 0, 0, .3);
                 color: white;
                 font-size: 12px;
             }
@@ -97,16 +101,27 @@ export default {
         }
         .toolbar-item {
             display: flex;
-            div {
-                background-repeat: no-repeat;
-                background-size: contain;
-            }
-            div:first-child {
-                margin-left: 14px;
-            }
-            div {
-                margin-right: 14px;
-            }
+        }
+        .toolbar-item .item-wrapper {
+            margin-right: 14px;
+        }
+        .toolbar-item .item-wrapper:first-child {
+            margin-left: 14px;
+        }
+        .toolbar-item .item-img {
+            background-clip: content-box;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            padding: 3px;
+        }
+        .toolbar-item .item-wrapper.selected .item-img {
+            border: solid 1px white;
+        }
+        .toolbar-item .item-title {
+            text-align: center;
+            font-size: 12px;
+            color: white;
         }
     }
 </style>
