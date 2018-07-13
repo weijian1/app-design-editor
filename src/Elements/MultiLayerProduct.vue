@@ -77,6 +77,7 @@ export default {
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
+            background-color: white;
         }
         .toolbar {
             position: absolute;
@@ -122,6 +123,10 @@ export default {
             text-align: center;
             font-size: 12px;
             color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
         }
     }
 </style>
