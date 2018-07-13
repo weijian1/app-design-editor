@@ -12,14 +12,16 @@
                           :class="value.multi_layer_product.property.currentIndex == index ? 'selected' : ''">{{layer.title}}</span>
                 </div>
                 <div class="toolbar-item">
-                    <div class="item-wrapper" :class="value.multi_layer_product.property.layers[value.multi_layer_product.property.currentIndex].currentIndex == index ? 'selected' : ''" 
-                                              v-for="(pic, index) in layers[value.multi_layer_product.property.currentIndex].item_pics" :key="index">
-                        <div :style="{ width: value.multi_layer_product.property.imageWidth, 
-                                       height: value.multi_layer_product.property.imageHeight,
-                                       backgroundImage: pic.url,
-                                       borderRadius: value.base_css.borderRadius} | Obj2CSS"
-                            class="item-img"></div>
-                            <div class='item-title' :style="{ width: value.multi_layer_product.property.imageWidth } | Obj2CSS">{{pic.title}}</div>
+                    <div class="toolbar-item-wrapper" ref="itemList" :style="contentInnerCss | Obj2CSS">
+                        <div class="item-wrapper" :class="value.multi_layer_product.property.layers[value.multi_layer_product.property.currentIndex].currentIndex == index ? 'selected' : ''" 
+                                                v-for="(pic, index) in layers[value.multi_layer_product.property.currentIndex].item_pics" :key="index">
+                            <div :style="{ width: value.multi_layer_product.property.imageWidth, 
+                                        height: value.multi_layer_product.property.imageHeight,
+                                        backgroundImage: pic.url,
+                                        borderRadius: value.base_css.borderRadius} | Obj2CSS"
+                                class="item-img"></div>
+                                <div class='item-title' :style="{ width: value.multi_layer_product.property.imageWidth } | Obj2CSS">{{pic.title}}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -50,11 +52,43 @@ export default {
                 resize: false,
                 resizeDirection: []
             },
-
+            contentInnerCss: {
+                left: 0
+            }
         }
     },
     methods: {
+        moveViewFromItemIndex(classIndex, itemPicIndex) {
+            console.log(classIndex);
+            console.log(itemPicIndex);
+            let item = this.$refs.itemList.children[itemPicIndex];
+            let elementContent = this.$refs.itemList.parentElement;
 
+            let itemRect = item.getBoundingClientRect();
+            let elementContentRect = elementContent.getBoundingClientRect();
+
+            let elementContentLeftWidth = elementContentRect.left + elementContentRect.width;
+            let itemLeftWidth = itemRect.left + itemRect.width;
+
+            let currentLeft = this.contentInnerCss.left;
+
+            // // 判断右边是否超出
+            if (elementContentLeftWidth <= itemLeftWidth) {
+                let offsetWidth = itemRect.left - elementContentLeftWidth + itemRect.width;
+                this.contentInnerCss = {
+                    left: -offsetWidth + currentLeft
+                };
+            }
+
+            // // 判断左边是否超出
+            if (elementContentRect.left >= itemRect.left) {
+                let offsetWidth = elementContentRect.left - itemRect.left;
+                this.contentInnerCss = {
+                    left: offsetWidth + currentLeft
+                };
+            }
+
+        }
     },
     computed: {
         layers() {
@@ -62,7 +96,24 @@ export default {
         }
     },
     mounted() {
+        this.$watch('value.multi_layer_product.property.currentIndex', (newVal, oldVal) => {
+            let layerCurrentIndex = this.value.multi_layer_product.property.layers[newVal].currentIndex;
+            this.moveViewFromItemIndex(newVal, layerCurrentIndex);
+        });
+        this.$watch('value.multi_layer_product.property.layers', (newVal, oldVal) => {
+            let classCurrentIndex = this.value.multi_layer_product.property.currentIndex;
+            this.moveViewFromItemIndex(classCurrentIndex, this.value.multi_layer_product.property.layers[classCurrentIndex].currentIndex);
+        }, {
+            deep: true,
+            immediate: true
+        });
         
+        this.$nextTick(() => {
+            setTimeout(() => {
+                let classCurrentIndex = this.value.multi_layer_product.property.currentIndex;
+                this.moveViewFromItemIndex(classCurrentIndex, this.value.multi_layer_product.property.layers[classCurrentIndex].currentIndex);
+            }, 50);
+        });
     },
     filters: {
         Obj2CSS
@@ -105,8 +156,13 @@ export default {
             }
         }
         .toolbar-item {
-            display: flex;
+            position: relative;
             overflow: hidden;
+        }
+        .toolbar-item-wrapper {
+            position: relative;
+            display: flex;
+            width: 100%;
         }
         .toolbar-item .item-wrapper {
             margin-right: 14px;
