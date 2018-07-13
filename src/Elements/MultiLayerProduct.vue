@@ -1,11 +1,11 @@
 <template>
     <element-border v-model="value.base_css" :selected="selected" :elementType="value.elementable_type" :listeners="borderListeners" v-cloak v-show="isLoadFinish">
         <div class="content-inner" v-if="value.multi_layer_product.property">
-            <div class="scenePic" :style="`backgroundImage: url(${value.multi_layer_product.property.scenePic})`"></div>
+            <div class="scenePic" :style="{ backgroundImage: value.multi_layer_product.property.scenePic } | Obj2CSS"></div>
             <div v-for="(item, index) in value.multi_layer_product.property.layers" 
                  :key="index"
                  :class="`layer${item.level}`"
-                 :style="`backgroundImage: url(${item.item_pics[item.currentIndex] ? item.item_pics[item.currentIndex].url : ''})`"></div>
+                 :style="{ backgroundImage: item.item_pics[item.currentIndex] ? item.item_pics[item.currentIndex].url : '' }"></div>
             <div class="toolbar"  :style=" { backgroundColor: `rgba(0, 0, 0, ${1 - value.multi_layer_product.property.opacity})` }">
                 <div class="toolbar-class">
                     <span v-for="(layer,index) in layers" :key="index" 
@@ -14,11 +14,12 @@
                 <div class="toolbar-item">
                     <div class="item-wrapper" :class="value.multi_layer_product.property.layers[value.multi_layer_product.property.currentIndex].currentIndex == index ? 'selected' : ''" 
                                               v-for="(pic, index) in layers[value.multi_layer_product.property.currentIndex].item_pics" :key="index">
-                        <div :style="{ width: value.multi_layer_product.property.imageWidth + 'px', 
-                            height: value.multi_layer_product.property.imageHeight + 'px',
-                            backgroundImage: `url(${pic.url})` }"
+                        <div :style="{ width: value.multi_layer_product.property.imageWidth, 
+                                       height: value.multi_layer_product.property.imageHeight,
+                                       backgroundImage: pic.url,
+                                       borderRadius: value.base_css.borderRadius} | Obj2CSS"
                             class="item-img"></div>
-                            <div class='item-title' :style="{ width: value.multi_layer_product.property.imageWidth + 'px'}">{{pic.title}}</div>
+                            <div class='item-title' :style="{ width: value.multi_layer_product.property.imageWidth } | Obj2CSS">{{pic.title}}</div>
                     </div>
                 </div>
             </div>
@@ -61,7 +62,10 @@ export default {
         }
     },
     mounted() {
-
+        
+    },
+    filters: {
+        Obj2CSS
     }
 }
 </script>
@@ -102,6 +106,7 @@ export default {
         }
         .toolbar-item {
             display: flex;
+            overflow: hidden;
         }
         .toolbar-item .item-wrapper {
             margin-right: 14px;
