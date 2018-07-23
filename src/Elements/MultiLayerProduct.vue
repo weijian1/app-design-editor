@@ -5,7 +5,7 @@
             <div v-for="(item, index) in value.multi_layer_product.property.layers" 
                  :key="index"
                  :class="`layer${item.level}`"
-                 :style="{ backgroundImage: item.item_pics[item.currentIndex] ? item.item_pics[item.currentIndex].url : '' }"></div>
+                 :style="{ backgroundImage: item.item_pics[item.currentIndex] ? item.item_pics[item.currentIndex].url : '' } | Obj2CSS"></div>
             <div class="toolbar"  :style=" { backgroundColor: `rgba(0, 0, 0, ${1 - value.multi_layer_product.property.opacity})` }">
                 <div class="toolbar-class">
                     <span v-for="(layer,index) in layers" :key="index" 
@@ -59,8 +59,6 @@ export default {
     },
     methods: {
         moveViewFromItemIndex(classIndex, itemPicIndex) {
-            console.log(classIndex);
-            console.log(itemPicIndex);
             let item = this.$refs.itemList.children[itemPicIndex];
             let elementContent = this.$refs.itemList.parentElement;
 
@@ -132,6 +130,8 @@ export default {
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
+        }
+        .scenePic {
             background-color: white;
         }
         .toolbar {
