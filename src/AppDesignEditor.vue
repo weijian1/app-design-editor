@@ -167,7 +167,6 @@ export default {
             this.editorData.select.elementIndex = [];
             this.editorData.contextMenu.isShow = false;
             this.editorData.contextMenu.elementIndex = [];
-            this.$emit('elementchange', this.editorData.select);
         },
         elementChange(elementIndex) {
             this.editorData.select.elementIndex.push(elementIndex);
@@ -175,6 +174,10 @@ export default {
         },
 
         // emit
+        onElementUnselect() {
+            this.unselectElemnt();
+            this.$emit('elementchange', this.editorData.select);
+        },
         onElementChange(elementIndex) {
             if (this.editorData.currentAction.multiSelect == false) {
                 this.unselectElemnt();
@@ -187,11 +190,11 @@ export default {
             this.$emit('elementdblclick', this.editorData.select);
         },
         onEditorHeaderSelect() {
-            this.unselectElemnt();
+            this.onElementUnselect();
             this.$emit('headerselect');
         },
         onSaveButtonClick() {
-            this.unselectElemnt();
+            this.onElementUnselect();
             this.$emit('savebuttonclick');
         },
         onDeleteElement() {
@@ -361,7 +364,7 @@ export default {
 
             if (e.pageX <= wrapperRect.left || e.pageX >= wrapperRect.right || e.pageY <= wrapperRect.top || e.pageY >= wrapperRect.bottom) {
                 if (e.target == this.$el) {
-                    this.unselectElemnt();
+                    this.onElementUnselect();
                 }
             }
         },

@@ -75,7 +75,7 @@ export default {
     },
     methods: {
         pageHeightDragStart(e) {
-            this.editorParent.unselectElemnt();
+            this.editorParent.onElementUnselect();
 
             this.eventData.currentPageHeight = this.value.property.height;
 

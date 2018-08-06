@@ -57,7 +57,7 @@ export default {
     methods: {
         unselectElemnt(e) {
             if (e.target == this.$el) {
-                this.editorParent.unselectElemnt();
+                this.editorParent.onElementUnselect();
             }
         },
         handleKeyDown(e) {
@@ -89,7 +89,7 @@ export default {
                     }
                 }
             } else if (e.keyCode == keyCodeUtil.KEYCODE_ESC) {
-                this.editorParent.unselectElemnt();
+                this.editorParent.onElementUnselect();
             } else if (e.keyCode >= 37 && e.keyCode <= 40) {
                 this.processMoveItem(e.keyCode);
             }
